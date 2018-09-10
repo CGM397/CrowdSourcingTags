@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>employee-home</title>
+    <link href="css/zzsc.css" rel="stylesheet">
+    <link href="css/maps.css" rel="stylesheet">
+    <link href="css/message.css" rel="stylesheet">
+    <link href="css/recommend.css" rel="stylesheet">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
+    <link href="fonts/css/font-awesome.css" rel="stylesheet">
+    <link href="fonts/fonts/fontawesome-webfont.ttf" rel="stylesheet">
+    <link href="fonts/fonts/fontawesome-webfont.woff" rel="stylesheet">
+    <link href="fonts/fonts/fontawesome-webfont.woff2" rel="stylesheet">
+    <script src="js/sweetalert.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/sweetalert.css">
+    <script type="text/javascript" src="js/maps.js"></script>
+    <script type="text/javascript" src="js/google.js"></script>
+    <script type="text/javascript" src="js/message.js"></script>
+    <script type="text/javascript" src="js/recommend.js"></script>
+    <script type="text/javascript">$(document).ready(function(){$().maps();});</script>
+    <script type="text/javascript">$(function (){
+        $('#nky2 li:not(#nky2 li:last)').click(function (){
+            $('.active').removeClass('active');
+            $(this).addClass("active");
+        });
+        $('.venus-menuM li').click(function(){
+            $('.venus-menuM li.active').removeClass('active');
+            $(this).addClass("active");
+            var mode=document.getElementById('read').innerText;
+            document.getElementById('read').innerText=(mode=='全部标为已读')?'删除已读':'全部标为已读';
+            if(mode=="全部标为已读"){
+                document.getElementById('read').innerText='删除已读';
+                refreshRead();
+            }
+            else{
+                document.getElementById('read').innerText='全部标为已读';
+                refreshNew();
+            }
+        });
+    })
+    </script>
+    <style>
+        .settingContent{
+            text-align: auto;
+            font-size: 20px;
+            font-size:normal;
+            margin-top:6%;
+            position:absolute;
+        }
+         .content>ul>li:last-child>ul>li>a{
+            width:300px;
+            font-size:10px;
+            float:right;
+         }
+    </style>
+</head>
+<body>
+
+<div class="content">
+    <ul id="nky2" class="venus-menu">
+        <li class="active"><a href="employee-home"><i class="icon-home"></i>主页</a></li>
+        <li><a href="#"><i class="icon-user"></i>个人</a><ul>
+            <li><a href="employee-info">个人信息</a></li>
+            <li><a href="employee-data">统计信息</a></li>
+        </ul></li>
+        <li><a href="#"><i class="icon-tasks"></i>任务</a><ul>
+            <li><a href="employee-newTask">接收新任务</a></li>
+            <li><a href="employee-underway">进行中任务</a></li>
+            <li><a href="employee-completed">已完成任务</a></li>
+        </ul></li>
+        <li><a href="employee-canvas"><i class="icon-pencil"></i>画布</a></li>
+        <li><a href="employee-contact"><i class="icon-envelope-alt"></i>联系我们</a></li>
+        <li style="float:right" onclick="openM()"><a href="#"><i class="fa fa-envelope-open-o" aria-hidden="true"></i>信息</a></li>
+    </ul>
+    <div class="settingContent" style="background:url(img/home.png) center no-repeat; width:94.7%; height:70%">
+    </div>
+
+    <div class="recommend">
+        <div style="font-size:30px;font-weight:bold">任务推荐：</div>
+        <ul>
+            <li class="con">
+                <img alt="con1" class="recommendPic" />
+                <div class="txt1">
+                    <h3 class="recommendH">任务一</h3>
+                    <p class="recommendP">任务描述</p>
+                </div>
+            </li>
+            <li class="con">
+                <img class="recommendPic"/>
+                <div class="txt1">
+                    <h3 class="recommendH">任务二</h3>
+                    <p class="recommendP">任务描述</p>
+                </div>
+            </li>
+            <li class="con">
+                <img class="recommendPic"/>
+                <div class="txt1">
+                    <h3 class="recommendH">任务三</h3>
+                    <p class="recommendP">任务描述</p>
+                </div>
+            </li>
+            <li class="con">
+                <img class="recommendPic"/>
+                <div class="txt1">
+                    <h3 class="recommendH">任务四</h3>
+                    <p class="recommendP">任务描述</p>
+                </div>
+            </li>
+            <li class="con">
+                <img class="recommendPic"/>
+                <div class="txt1">
+                    <h3 class="recommendH">任务五</h3>
+                    <p class="recommendP">任务描述</p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+</div>
+
+<section id="messageP" class="panelM none">
+    <div class="contentM">
+        <ul class="venus-menuM">
+            <li class="active"><a href="#">未读</a></li>
+            <li><a href="#">已读</a></li>
+        </ul>
+    </div>
+    <div id='messageBox' class="scroll"></div>
+    <div>
+        <a id="read" class="btn2" onclick="readButton()">
+            全部标为已读
+        </a>
+    </div>
+</section>
+
+</body>
+
+<script>
+    getRecommend();
+    var cons= document.getElementsByClassName('con');
+    var ps=document.getElementsByClassName('recommendP')
+    for(var i=0;i<cons.length;i++){
+        cons[i].index=i;
+        cons[i].onclick=function() {
+            localStorage.setItem('taskId',ps[this.index].innerHTML.substr(0,19));
+            window.location.href='employee-taskDetail';
+            window.event.returnValue=false;
+        }
+    }
+</script>
+</html>

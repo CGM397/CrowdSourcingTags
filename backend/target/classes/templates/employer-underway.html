@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1.0, maximum-scale=1",user-scalable=no>
+    <title>employer-home</title>
+    <link href="css/zzsc.css" rel="stylesheet">
+    <link href="css/maps.css" rel="stylesheet">
+    <link href="fonts/css/font-awesome.css" rel="stylesheet">
+    <link href="fonts/fonts/fontawesome-webfont.ttf" rel="stylesheet">
+    <link href="fonts/fonts/fontawesome-webfont.woff" rel="stylesheet">
+    <link href="fonts/fonts/fontawesome-webfont.woff2" rel="stylesheet">
+    <script type="text/javascript" src="js/message.js"></script>
+    <link href="css/message.css" rel="stylesheet">
+    <script src="js/sweetalert.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/sweetalert.css">
+    <script type="text/javascript" src="js/maps.js"></script>
+    <script type="text/javascript" src="js/google.js"></script>
+    <script type="text/javascript">$(document).ready(function(){$().maps();});</script>
+    <script type="text/javascript">$(function (){
+        $('#nky2 li:not(#nky2 li:last)').click(function (){
+            $('.active').removeClass('active');
+            $(this).addClass("active");
+        });
+        $('.venus-menuM li').click(function(){
+            $('.venus-menuM li.active').removeClass('active');
+            $(this).addClass("active");
+            var mode=document.getElementById('read').innerText;
+            document.getElementById('read').innerText=(mode=='全部标为已读')?'删除已读':'全部标为已读';
+            if(mode=="全部标为已读"){
+                document.getElementById('read').innerText='删除已读';
+                refreshRead();
+            }
+            else{
+                document.getElementById('read').innerText='全部标为已读';
+                refreshNew();
+            }
+        });
+    })
+    </script>
+
+</head>
+
+<body>
+
+<div style="text-align:center;clear:both">
+    <script src="/gg_bd_ad_720x90.js" type="text/javascript"></script>
+    <script src="/follow.js" type="text/javascript"></script>
+</div>
+
+<div class="content">
+    <ul id="nky2" class="venus-menu">
+        <li><a href="employer-home"><i class="icon-home"></i>主页</a></li>
+        <li><a href="#"><i class="icon-user"></i>个人</a>
+            <ul>
+                <li><a href="employer-info">个人信息</a></li>
+                <li><a href="employer-data">统计信息</a></li>
+            </ul></li>
+        <li class="active"><a href="#"><i class="icon-tasks"></i>任务</a><ul>
+            <li><a href="#">发布新任务</a><ul>
+                <li><a href="openPublication">自由发布</a></li>
+                <li><a href="specifiedPublication">指派发布</a></li>
+                <li><a href="cutPartPublication">分块发布</a></li>
+            </ul>
+            <li><a href="employer-underway">进行中任务</a></li>
+            <li><a href="employer-completed">已完成任务</a></li>
+        </ul></li>
+        <li><a href="employer-contact"><i class="icon-envelope-alt"></i>联系我们</a></li>
+        <li style="float:right" onclick="openM()"><a href="#"><i class="fa fa-envelope-open-o" aria-hidden="true"></i>信息</a></li>
+    </ul>
+</div>
+
+<style>
+    #task
+    {
+        padding:20px;
+        font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+        width:100%;
+        border-collapse:collapse;
+    }
+    #task td
+    {
+        height:35px;
+        font-size:1.2em;
+        border:1px solid #98bf21;
+        padding:3px 7px 2px 7px;
+    }
+    #task th
+    {
+        font-size:1.3em;
+        text-align:left;
+        padding-left:10px;
+        padding-top:5px;
+        padding-bottom:5px;
+        background-color:#A7C942;
+        color:#ffffff;
+    }
+    #task tr.alt td
+    {
+        color:#000000;
+        background-color:#EAF2D3;
+    }
+    .settingHead {
+        margin: 0px 50px 50px 50px;
+        text-align: center;
+        font-size: 50px;
+        font-style: normal;
+    }
+    .btn {
+        cursor:pointer;
+        color: white;
+        margin-top:5px;
+        background: rgb(48, 35, 174);
+        font-size: 20px;
+        line-height: 25px;
+        height: 30px;
+        padding: 0 20px;
+        border-radius: 3px;
+        display: inline-block;
+        text-decoration: none;
+        transition: background .15s;
+    }
+    .btn:hover {
+        background-color: rgb(81, 67, 224);
+    }
+     .content>ul>li:last-child>ul>li>a{
+            width:300px;
+            font-size:10px;
+            float:right;
+         }
+</style>
+
+<script>
+    var employerId = localStorage.getItem("userId");
+    var isFull=false;
+    var taskId="";
+    var taskName="";
+    var taskType=[];
+    var releaseType="";
+    var startTime="";
+    var limitTime="";
+    var totalPictureAmount=0;
+    var acceptedEmployeeNum=0;
+    var completedEmployeeNum=0;
+    var neededEmployeeNum=0;
+    var neededEmployeeAmount=0;
+    var taskCondition="";
+    var award=0;
+    var acceptedEmployeeId=[];
+    var completedEmployeeId=[];
+    var isFinished=false;
+    var overallPictureId=[];
+    var rectanglePictureId=[];
+    var boundaryPictureId=[];
+    var pictureAcceptedTimes=[];
+    var appointedEmployeeId=[];
+    var marks="";
+    var picCode="";
+
+    var employerTaskInfo = {
+        employerId:employerId,
+        taskId:taskId,
+        neededEmployeeNum:neededEmployeeNum,
+        acceptedEmployeeNum:acceptedEmployeeNum,
+        completedEmployeeNum:completedEmployeeNum,
+        acceptedEmployeeId:acceptedEmployeeId,
+        completedEmployeeId:completedEmployeeId,
+        isFinished:isFinished
+    };
+    var task = {
+        isFull:isFull,
+        taskId:taskId,
+        taskName:taskName,
+        taskType:taskType,
+        employerId:employerId,
+        releaseType:releaseType,
+        startTime:startTime,
+        limitTime:limitTime,
+        neededEmployeeAmount:neededEmployeeAmount,
+        totalPictureAmount:totalPictureAmount,
+        award:award,
+        overallPictureId:overallPictureId,
+        rectanglePictureId:rectanglePictureId,
+        boundaryPictureId:boundaryPictureId,
+        pictureAcceptedTimes:pictureAcceptedTimes,
+        appointedEmployeeId:appointedEmployeeId,
+        marks:marks
+    };
+
+    showEmployerUnderwayTask();
+    function set(a) {
+        var tr=a.parentNode.parentNode;
+        var taskId = tr.cells[1].innerText;
+        localStorage.setItem("taskId", taskId);
+        window.location.href='employer-taskDetail';
+        window.event.returnValue=false;
+    }
+    function submit(a){
+        var tr=a.parentNode.parentNode;
+        var completed=0;
+        var taskId = tr.cells[1].innerText;
+        var employerId= localStorage['userId'];
+        $.ajax({
+            type: 'POST',
+            url:"/EmployerTask/showOneTaskInfo",
+            async: false,                         //将ajax改为同步模式
+            data: {
+                employerId:employerId,
+                taskId:taskId
+            },
+            success:function(result){
+               completed=result.completedEmployeeNum;
+            },
+            error:function(result){
+                alert("error");
+            }
+        });
+        if(completed <5){
+            swal("无法提交","已完成工人数小于5","error");
+            return;
+        }
+        swal({
+                title: "确定提交该任务吗",
+                text: "点击确认进行提交",
+                type: "warning",
+                cancelButtonText:"取消",
+                confirmButtonText:"确认",
+                showCancelButton: true,
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true
+            },
+            function(){
+                $.ajax({
+                    type: 'POST',
+                    url:"/EmployerTask/submit",
+                    data: {
+                        employerId:employerId,
+                        taskId:taskId
+                    },
+                    success:function(result){
+                        if(result==true){
+                            setTimeout(function(){
+                                swal("提交成功","任务信息已更新","success");
+                                setTimeout(function() {
+                                    window.location.reload();
+                                },1000);
+                            }, 1500);
+                        }else{
+                            alert("提交失败");
+                        }
+                    },
+                    error:function(result){
+                        alert("error");
+                    }
+                });
+            });
+    }
+    function AddRow(picCode,id,name,type,time,condition,award){
+        var table=document.getElementById('task');
+        var row = document.createElement('tr'); //创建行
+        var picCell=document.createElement('td');
+        var pic=document.createElement('img');
+        pic.style.paddingTop='1.5px';
+        pic.style.float='left';
+        pic.style.width='50px';
+        pic.style.height='50px';
+        pic.style.margin='5px';
+        pic.src=picCode;
+        picCell.appendChild(pic);
+        row.appendChild(picCell);
+        var idCell = document.createElement('td'); //创建第一列id
+        idCell.innerHTML = id; //填充数据
+        row.appendChild(idCell); //加入行 ，下面类似
+        var nameCell = document.createElement('td');//创建第二列name
+        nameCell.innerHTML = name;
+        row.appendChild(nameCell);
+        var typeCell = document.createElement('td');//创建第三列type
+        typeCell.innerHTML = type;
+        row.appendChild(typeCell);
+        var timeCell = document.createElement('td');//创建第四列time
+        timeCell.innerHTML = time;
+        row.appendChild(timeCell);
+        var conditionCell = document.createElement('td');//创建第五列condition
+        conditionCell.innerHTML = condition;
+        row.appendChild(conditionCell);
+        var awardCell = document.createElement('td');//创建第六列award
+        awardCell.innerHTML = award;
+        row.appendChild(awardCell);
+        //下面为每行末尾添加查看按钮
+        var checkCell = document.createElement('td');//创建第四列，操作列
+        var check=document.createElement('a');
+        check.className='btn';
+        check.innerHTML='查看';
+        check.href='#';
+        check.onclick=function() {
+            set(this);
+        };
+        var complete=document.createElement('a');
+        complete.innerHTML='完成';
+        complete.className='btn';
+        complete.href='#';
+        complete.onclick=function() {
+            submit(this);
+        };
+        complete.style.marginLeft='20px';
+        checkCell.appendChild(check);
+        checkCell.appendChild(complete);
+        row.appendChild(checkCell);
+        table.appendChild(row);
+    }
+
+    function showEmployerUnderwayTask() {
+        $.ajax({
+            type: 'POST',
+            url:"/EmployerTask/showUnderwayTasks",
+            data: {
+                employerId:employerId
+            },
+            success:function(result){
+                if(result.length > 0){
+                    for(var count = 0; count < result.length; count++){
+                        taskId = result[count].taskId;
+                        acceptedEmployeeNum = result[count].acceptedEmployeeNum;
+                        completedEmployeeNum = result[count].completedEmployeeNum;
+                        neededEmployeeNum = result[count].neededEmployeeNum;
+                        taskCondition = acceptedEmployeeNum+"/"+completedEmployeeNum+"/"+neededEmployeeNum;
+                        checkOneTask(taskId);
+                        AddRow(picCode,taskId,taskName,releaseType,startTime,taskCondition,award);
+                    }
+                }
+            },
+            error:function(result){
+                alert("error");
+            }
+        });
+    }
+
+    function checkOneTask(taskId) {
+        $.ajax({
+            type: 'POST',
+            url:"/EmployerTask/checkOneTask",
+            async: false,                         //将ajax改为同步模式
+            data: {
+                taskId:taskId
+            },
+            success:function(result){
+                taskName = result.taskName;
+                startTime = result.startTime;
+                var myReleaseType = result.releaseType;
+                award = result.award;
+                if (result.overallPictureId.length > 0) {
+                    picCode=showPicture(result.overallPictureId[0])
+                } else if (result.rectanglePictureId.length > 0){
+                    picCode = showPicture(result.rectanglePictureId[0]);
+                } else{
+                    picCode=showPicture(result.boundaryPictureId[0]);
+                }
+                if(myReleaseType == "APPOINTED")
+                    releaseType = "指定委派";
+                else if(myReleaseType == "NON_APPOINTED")
+                    releaseType = "自由委派";
+            },
+            error:function(result){
+                alert("error");
+            }
+        });
+    }
+    function showPicture(pictureId) {
+        var picCode="";
+        $.ajax({
+            type: 'POST',
+            url:"/EmployeeTask/getPictureBase64Code",
+            async: false,                         //将ajax改为同步模式
+            data: {
+                taskId:taskId,
+                pictureId:pictureId
+            },
+            success:function(result){
+                picCode = result;
+            },
+            error:function(result){
+                alert("error");
+            }
+        });
+        return picCode;
+    }
+</script>
+
+<section id="messageP" class="panelM none">
+    <div class="contentM">
+        <ul class="venus-menuM">
+            <li class="active"><a href="#">未读</a></li>
+            <li><a href="#">已读</a></li>
+        </ul>
+    </div>
+    <div id='messageBox' class="scroll"></div>
+    <div>
+        <a id="read" class="btn2" onclick="readButton()">
+            全部标为已读
+        </a>
+    </div>
+</section>
+<div class="settingHead">进行中任务</div>
+<div class="content">
+    <table id="task">
+        <tr>
+            <th width="60"px></th>
+            <th width="200px">任务ID</th>
+            <th width="400px">任务名</th>
+            <th width="200px">发起形式</th>
+            <th width="200px">发起时间</th>
+            <th width="200px">接收/完成/总额</th>
+            <th width="150px">任务奖励</th>
+            <th>详细信息</th>
+        </tr>
+    </table>
+</div>
+
+</body>

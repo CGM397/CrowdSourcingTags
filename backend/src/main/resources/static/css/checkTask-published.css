@@ -1,0 +1,118 @@
+      
+	   .panel {
+			 position: absolute;
+             text-align: center;
+             background-color: white;
+             width: 1200px;
+			 height: 110%;
+             border-radius: 10px; 
+             padding: 1px;
+             left:50%;top:50%;
+			 margin-left:-601px;
+			 margin-top:-301px;
+             transition: box-shadow .30s;
+           }
+       .panel:hover{
+             box-shadow: #fff 5px 5px 25px;
+           }
+	   .panel input[type=text]{
+		     margin-top:15px;
+			 margin-left:-65px;
+	         width:100px;
+			 height:30px;
+			 border:1px solid #AAAAAA;
+			 border-radius:10px;
+			 border:0px;
+			 background:rgba(0, 0, 0, 0);
+			 font-size:30px;
+			
+	   }
+	   textarea{
+		     margin-top:17.5px;
+			 margin-left:-60px;
+			 width:1000px;
+		     border:0px;
+			 background:rgba(0, 0, 0, 0);
+			 font-size:20px;
+			 font-style:normal;
+			 font-weight:bold;
+			 outline:none;
+	   }
+       h1{ 
+	       float:left;
+		   margin-left:10px;
+		   margin-top:15px;
+		   font-size:30px;
+	   }
+	   h3{
+		   margin-left:10px;
+		   margin-top:15px;
+		   float:left;
+		   font-size:20px;
+	   }
+	   h4{
+		   float:left;
+	   }
+	   body{
+	         font: 14px/28px "微软雅黑";
+	   }
+	   .contact *:focus{
+	         outline:none;
+	   }
+	   .contact{
+	         width:600px;
+			 height:auto;
+			 margin: 40px auto;
+			 padding: 10px;
+	   }
+	   .contact ul{
+	         list-style-type: none;
+	         width: 600px;
+	   }
+	   .contact ul li{
+	         border-bottom: 1px solid #DFDFDF;
+			 padding: 12px;
+	   }
+	   label{
+	         width:70px;
+			 display:inline-block;
+			 float: left;             
+	   }
+	   .contact ul li input[type=text],select{
+	         margin-left:0px;
+	         width:220px;
+			 height:20px;
+			 border:1px solid #AAAAAA;
+			 border-radius:10px;
+			 padding:3px 8px;
+	   }
+       .contact ul li input:focus{
+	         border-color: green;
+			 padding-right:40px;
+	   }
+	   .contact ul li input[type=text]{
+	         transition: .30s;
+	   }
+	  
+	   hr{
+		   width:1200px;
+	   }
+	   textarea{
+			 border-radius:10px;
+	   }
+	   .contact ul li select:focus{
+	         border-color: green;
+	   }
+       .contact ul li textarea:focus{
+	         border-color: green;
+			 padding-right:40px;
+	   }
+	   
+	   .thumbnail{
+		   padding-top:1.5%;
+		   float:left;
+		   width:102px;
+		   height:90px;
+		   margin:5px;
+		   border-color: white;
+	   }

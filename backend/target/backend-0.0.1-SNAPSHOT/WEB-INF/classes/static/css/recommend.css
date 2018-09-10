@@ -1,0 +1,79 @@
+/*
+@Author:Qiu Tingyu
+@Create Time: 2015-6-29 9:02
+@Last Modified Time:
+*/
+
+@charset "utf-8";
+*{padding: 0; margin: 0;}
+img{border: none;}
+ol,ul,li{list-style: none;}
+a{text-decoration: none;}
+body{ font-family: "微软雅黑";}
+
+/*----------- 遮罩内容区 开始------------------------------------*/
+/*----------- 从底部上升的遮罩效果 开始---------------------------*/
+.recommend-title{
+	margin-top: 50px;
+	text-align: center;
+}
+.recommend{
+	position:absolute;
+	width:85%;
+	height: 220px;
+	top:85%;left:6%;
+	border: 1px solid #ccc;
+	padding: 15px 25px 15px 25px;
+}
+.recommend1{
+	position:absolute;
+	width:85%;
+	height: 320px;
+	top:60%;left:5%;
+	border: 0px solid #ccc;
+	padding: 15px 25px 15px 25px;
+}
+.con{
+	width: 15%;
+	height: 198px;
+	float: left;
+	margin-top:10px;
+	margin-right: 2.5%;
+	margin-left: 2.5%;
+	margin-bottom: 15px;
+	position: relative;
+	cursor: pointer;
+}
+.con img{
+	width:100%;
+	height:100% ;
+}
+.txt1{
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: 45px;
+	line-height: 45px;
+	text-align: center;
+	color: #fff;
+	background: rgba(0,0,0,0.6);
+}
+.txt1 h3{
+	font-weight: normal;
+}
+.txt1 p{
+	font-size: 14px;
+	display: none;
+	line-height: 20px;
+	-webkit-margin-before: 1em;
+	-webkit-margin-after: 1em;
+	-webkit-margin-start: 0px;
+	-webkit-margin-end: 0px;
+	-moz-margin-before: 1em;
+	-moz-margin-after: 1em;
+	-moz-margin-start: 0px;
+	-moz-margin-end: 0px;
+}
+/*------------- 从底部上升的遮罩效果 结束 ------------------------------*/
+/*------------- 遮罩内容区 结束--------------------------------------*/

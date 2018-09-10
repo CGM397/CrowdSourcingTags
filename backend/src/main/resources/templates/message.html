@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1.0, maximum-scale=1" ,user-scalable="no">
+    <title>employer-user</title>
+    <link href="css/zzsc.css" rel="stylesheet">
+    <link href="css/maps.css" rel="stylesheet">
+	<link href="css/message.css" rel="stylesheet">
+	<link href="fonts/css/font-awesome.css" rel="stylesheet">
+    <link href="fonts/fonts/fontawesome-webfont.ttf" rel="stylesheet">
+    <link href="fonts/fonts/fontawesome-webfont.woff" rel="stylesheet">
+    <link href="fonts/fonts/fontawesome-webfont.woff2" rel="stylesheet">
+	<link rel="stylesheet" href="css/user_style.css">
+    <script type="text/javascript" src="js/maps.js"></script>
+    <script type="text/javascript" src="js/google.js"></script>
+    <script type="text/javascript" src="js/vue.min.js"></script>
+	<script type="text/javascript" src="js/message.js"></script>
+    <script type="text/javascript">$(document).ready(function(){$().maps();});</script>
+    <script type="text/javascript">$(function (){
+        $('#nky2 li:not(#nky2 li:last)').click(function (){
+            $('.active').removeClass('active');
+            $(this).addClass("active");
+        });
+        $('.venus-menuM li').click(function(){
+            $('.venus-menuM li.active').removeClass('active');
+            $(this).addClass("active");
+            var mode=document.getElementById('read').innerText;
+            document.getElementById('read').innerText=(mode=='全部标为已读')?'删除已读':'全部标为已读';
+            if(mode=="全部标为已读"){
+                document.getElementById('read').innerText='删除已读';
+                refreshRead();
+			}
+			else{
+                document.getElementById('read').innerText='全部标为已读';
+                refreshNew();
+			}
+		});
+    })
+	</script>
+	<!--点击头像实现修改-->
+    <style>
+	</style>
+	
+</head>
+
+<body>
+
+<div class="content">
+    <ul id="nky2" class="venus-menu">
+        <li><a href="employee-home"><i class="icon-home"></i>主页</a></li>
+        <li class="active"><a href="#"><i class="icon-user"></i>个人</a><ul>
+            <li><a href="employee-info">个人信息</a></li>
+            <li><a href="employee-data">统计信息</a></li>
+        </ul></li>
+        <li><a href="#"><i class="icon-tasks"></i>任务</a><ul>
+            <li><a href="employee-newTask">接收新任务</a></li>
+            <li><a href="employee-underway">进行中任务</a></li>
+            <li><a href="employee-completed">已完成任务</a></li>
+        </ul></li>
+        <li><a href="employee-canvas"><i class="icon-pencil"></i>画布</a></li>
+        <li><a href="employee-contact"><i class="icon-envelope-alt"></i>联系我们</a></li>
+        <li style="float:right" onclick="openM()"><a href="#"><i class="fa fa-envelope-open-o" aria-hidden="true"></i>信息</a></li>
+    </ul>
+</div>
+
+<section class="panelL">
+	<p class="avatar"></p>
+	<h2>标注数据</h2>
+	<div class="contact">
+		<form action="#" method="post" name="cForm">
+			<ul>
+				<li>
+					<label>已发布任务</label>
+					<input id="publishedNum" type="text" name="published" placeholder="0" readonly>
+				</li>
+				<li>
+					<label>进行中任务</label>
+					<input id="underwayNum" type="text" name="underway" placeholder="0" readonly>
+				</li>
+				<li>
+					<label>已完成任务</label>
+					<input id="completedNum" type="text" name="completed" placeholder="0" readonly>
+				</li>
+			</ul>
+		</form>
+	</div>
+</section>
+
+<section id="messageP" class="panelM none">
+    <div class="contentM">
+    <ul class="venus-menuM">
+    <li class="active"><a href="#">未读</a></li>
+<li><a href="#">已读</a></li>
+</ul>
+</div>
+<div id='messageBox' class="scroll">
+    <div class="txt">
+    <label class="Mlabel">Title：</label>
+<input class="substance" type="text" placeholder="第一次任务发布">
+    <input class="date" type="text" placeholder="2018/6/14/21:01:20">
+    <div>
+    <a class="checkBtn">查看</a>
+    <a class="deleteBtn">删除</a>
+    </div>
+    </div>
+    <div class="txt">
+    <label class="Mlabel">Title：</label>
+<input class="substance" type="text" placeholder="第一次任务发布">
+    <input class="date" type="text" placeholder="2018/6/14/21:01:20">
+    <div>
+    <a class="checkBtn">查看</a>
+    <a class="deleteBtn">删除</a>
+    </div>
+    </div>
+    <div class="txt">
+    <label class="Mlabel">Title：</label>
+<input class="substance" type="text" placeholder="第一次任务发布">
+    <input class="date" type="text" placeholder="2018/6/14/21:01:20">
+    <div>
+    <a class="checkBtn">查看</a>
+    <a class="deleteBtn">删除</a>
+    </div>
+    </div>
+    <div class="txt">
+    <label class="Mlabel">Title：</label>
+<input class="substance" type="text" placeholder="第一次任务发布">
+    <input class="date" type="text" placeholder="2018/6/14/21:01:20">
+    <div>
+    <a class="checkBtn">查看</a>
+    <a class="deleteBtn">删除</a>
+    </div>
+    </div>
+    <div class="txt">
+    <label class="Mlabel">Title：</label>
+<input class="substance" type="text" placeholder="第一次任务发布">
+    <input class="date" type="text" placeholder="2018/6/14/21:01:20">
+    <div>
+    <a class="checkBtn">查看</a>
+    <a class="deleteBtn">删除</a>
+    </div>
+    </div>
+    <div class="txt" onclick="alert(this.index)">
+    <label class="Mlabel">Title：</label>
+<input class="substance" type="text" placeholder="第一次任务发布">
+    <input class="date" type="text" placeholder="2018/6/14/21:01:20">
+    <div>
+    <a class="checkBtn">查看</a>
+    <a class="deleteBtn">删除</a>
+    </div>
+    </div>
+    <div class="txt">
+    <label class="Mlabel">Title：</label>
+<input class="substance" type="text" placeholder="第一次任务发布">
+    <input class="date" type="text" placeholder="2018/6/14/21:01:20">
+    <div>
+    <a class="checkBtn">查看</a>
+    <a class="deleteBtn">删除</a>
+    </div>
+    </div>
+    <div class="txt">
+    <label class="Mlabel">Title：</label>
+<input class="substance" type="text" placeholder="第一次任务发布">
+    <input class="date" type="text" placeholder="2018/6/14/21:01:20">
+    <div>
+    <a class="checkBtn">查看</a>
+    <a class="deleteBtn">删除</a>
+    </div>
+    </div>
+    </div>
+    <div>
+    <a id="read" class="btn2" onclick="readButton()">
+    全部标为已读
+    </a>
+    </div>
+    </section>
+    <script>
+    var message=new Message('1','employee','2018/06/06 18:20:21','新任务发布','该任务为自由发布任务,类型：自然/植物，奖励100','0');
+    addMessage(1,message);
+</script>
+</body></html>

@@ -1,0 +1,163 @@
+.contentM{
+    margin:10px 10px;
+}
+.venus-menuM{width: 100%;margin:0;padding: 0;position:relative;float:left;font-family: 'Open Sans', sans-serif;list-style: none;background: #fff;box-shadow: 0 1px 3px #dedede;}
+.venus-menuM li{display: inline-block;margin: 0;padding: 0;float: left;line-height: 20px;position: relative;width:50%}
+.venus-menuM > li > a{padding: 18px 24px;font-size: 18px;color: #777;text-decoration: none;display: block;-webkit-transition: color 0.2s linear, background 0.2s linear;-moz-transition: color 0.2s linear, background 0.2s linear;-o-transition: color 0.2s linear, background 0.2s linear;transition: color 0.2s linear, background 0.2s linear;}
+.venus-menuM li:hover > a,
+.venus-menuM li.active a{background: #8ECB8D;color: #fff;}
+.venus-menuM > li > a i{color: #bababa;}
+.venus-menuM > li:hover > a i,.venus-menu li.active a i{color: #fff;}
+
+.panelM {
+    position: absolute;
+    text-align: center;
+    background-color: white;
+    width: 350px;
+    height: 350px;
+    border-radius: 10px;
+    padding: 1px;
+    margin-left:79%;
+    margin-top:5%;
+    transition: box-shadow .30s;
+    border-style:solid;
+    border-color:#E8E8E8;
+}
+.btn2 {
+    position: relative;
+    color: black;
+    background: white;
+    font-size: 16px;
+    width: 350px;
+    margin-left:0%;
+    line-height: 38px;
+    height: 30px;
+    padding:5px 0px;
+    border-radius: 10px;
+    display: inline-block;
+    text-decoration: none;
+    transition: background .15s;
+}
+.btn2:hover {
+    background-color: #8ECB8D;
+}
+.checkBtn{
+    cursor:pointer;
+    position: relative;
+    color: black;
+    background:white;
+    font-size: 16px;
+    width:100px;
+    margin-left:10%;
+    margin-top:1%;
+    line-height: 20px;
+    height:16px;
+    padding:5px 0px;
+    border-radius: 10px;
+    display: inline-block;
+    text-align:center;
+    text-decoration: none;
+    transition: background .15s;
+}
+.checkBtn:hover{
+    background-color: #8ECB8D;
+}
+.deleteBtn{
+    cursor:pointer;
+    position: relative;
+    color: black;
+    background:white;
+    font-size: 16px;
+    width:100px;
+    margin-left:5%;
+    margin-top:1%;
+    line-height: 20px;
+    height:16px;
+    padding:5px 0px;
+    border-radius: 10px;
+    display: inline-block;
+    text-align:center;
+    text-decoration: none;
+    transition: background .15s;
+}
+.deleteBtn:hover{
+    background-color: red;
+}
+body{
+    font: 14px/28px "微软雅黑";
+}
+.Mlabel{
+    float:left;
+    width:15%;
+}
+.lab{
+    margin-left:12%;
+}
+.txt{
+    font-size: 15px;
+    height:60px;
+    border-bottom-style:inset;
+}
+.txt:hover{
+    background-color:#F8F8F8;
+}
+.date{
+    float:right;
+    outline:none;
+    border:0px;
+    width:30%;
+    margin-top:7px;
+    background-color:#F8F8F8
+}
+.substance{
+    outline:none;
+    border:0px;
+    width:35%;
+    margin-top:7px;
+    float:left;
+    background-color:#F8F8F8
+}
+.panelM>a{
+    margin-left:15px;
+}
+
+/*消息一栏一开始要加上这个属性，点击事件完成后，去除该属性*/
+.none{
+    display:none;
+}
+
+.scroll{
+    margin-top:70px;
+    margin-left:3%;
+    border: 0px solid #000;
+    width: 94%;
+    height: 69%;
+    overflow: auto;
+}
+.scroll::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+.scroll::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,.05);
+    border-radius: 10px;
+    -webkit-box-shadow: inset 1px 1px 0 rgba(0,0,0,.1);
+}
+.scroll:hover::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,.2);
+    border-radius: 10px;
+    -webkit-box-shadow: inset 1px 1px 0 rgba(0,0,0,.1);
+}
+.scroll::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0,0,0,.4);
+    -webkit-box-shadow: inset 1px 1px 0 rgba(0,0,0,.1);
+}
+.scroll::-webkit-scrollbar-track {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0);
+    background-color: white;
+}
+.scroll::-webkit-scrollbar-track:hover {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.4);
+    background-color: rgba(0,0,0,.01);
+}

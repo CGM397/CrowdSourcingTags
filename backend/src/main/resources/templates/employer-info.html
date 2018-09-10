@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1.0, maximum-scale=1",user-scalable=no>
+	<title>employer-home</title>
+	<link href="css/zzsc.css" rel="stylesheet">
+	<link href="css/maps.css" rel="stylesheet">
+	<link href="fonts/css/font-awesome.css" rel="stylesheet">
+	<link href="fonts/fonts/fontawesome-webfont.ttf" rel="stylesheet">
+	<link href="fonts/fonts/fontawesome-webfont.woff" rel="stylesheet">
+	<link href="fonts/fonts/fontawesome-webfont.woff2" rel="stylesheet">
+	<script type="text/javascript" src="js/message.js"></script>
+	<link href="css/message.css" rel="stylesheet">
+	<link rel="stylesheet" href="css/user_style.css">
+	<script type="text/javascript" src="js/maps.js"></script>
+	<script type="text/javascript" src="js/google.js"></script>
+	<script type="text/javascript" src="js/vue.min.js.js"></script>
+	<script src="js/sweetalert.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/sweetalert.css">
+	<script type="text/javascript">$(document).ready(function(){$().maps();});</script>
+	<script type="text/javascript">$(function (){
+        $('#nky2 li:not(#nky2 li:last)').click(function (){
+            $('.active').removeClass('active');
+            $(this).addClass("active");
+        });
+        $('.venus-menuM li').click(function(){
+            $('.venus-menuM li.active').removeClass('active');
+            $(this).addClass("active");
+            var mode=document.getElementById('read').innerText;
+            document.getElementById('read').innerText=(mode=='全部标为已读')?'删除已读':'全部标为已读';
+            if(mode=="全部标为已读"){
+                document.getElementById('read').innerText='删除已读';
+                refreshRead();
+            }
+            else{
+                document.getElementById('read').innerText='全部标为已读';
+                refreshNew();
+            }
+        });
+    })
+	</script>
+	<style>
+		 .content>ul>li:last-child>ul>li>a{
+            width:300px;
+            font-size:10px;
+            float:right;
+         }
+	</style>
+	<!--点击头像实现修改-->
+</head>
+
+<body>
+
+<div style="text-align:center;clear:both">
+	<script src="/gg_bd_ad_720x90.js" type="text/javascript"></script>
+	<script src="/follow.js" type="text/javascript"></script>
+</div>
+
+<div class="content">
+	<ul id="nky2" class="venus-menu">
+		<li><a href="employer-home"><i class="icon-home"></i>主页</a></li>
+		<li class="active"><a href="#"><i class="icon-user"></i>个人</a>
+			<ul>
+				<li><a href="employer-info">个人信息</a></li>
+				<li><a href="employer-data">统计信息</a></li>
+			</ul></li>
+		<li><a href="#"><i class="icon-tasks"></i>任务</a><ul>
+			<li><a href="#">发布新任务</a><ul>
+				<li><a href="openPublication">自由发布</a></li>
+				<li><a href="specifiedPublication">指派发布</a></li>
+				<li><a href="cutPartPublication">分块发布</a></li>
+			</ul>
+			<li><a href="employer-underway">进行中任务</a></li>
+			<li><a href="employer-completed">已完成任务</a></li>
+		</ul></li>
+		<li><a href="employer-contact"><i class="icon-envelope-alt"></i>联系我们</a></li>
+		<li style="float:right" onclick="openM()"><a href="#"><i class="fa fa-envelope-open-o" aria-hidden="true"></i>信息</a></li>
+	</ul>
+</div>
+
+<section class="panel">
+	<script></script>
+	<script type="text/javascript" src="js/touxiang.js"></script>
+	<p class="avatar">
+        <input id="img_upload" type="file" style="cursor:pointer; opacity:0; filter:alpha(opacity=0); height: 120px; width: 120px; position: absolute; top: -7.5%; left: 40%; z-index: 9;" title="点击头像上传自定义头像" onchange="handleFiles(this,'icon')">
+        <img id='dp' alt=""><!--头像放置处-->
+	</p>
+	<h2>个人信息</h2>
+	<div class="contact">
+		<form action="#" method="post" name="cForm">
+			<ul>
+				<li>
+					<label>用户名</label>
+					<input id="employerName" type="text" name="username" placeholder="yourname">
+				</li>
+				<li>
+					<label>用户身份</label>
+					<input type="text" name="useridentity" placeholder="众包发起者" readonly>
+				</li>
+				<li>
+					<label>账号</label>
+					<input id="employerId" type="text" name="useraccount" placeholder="youraccount" readonly>
+				</li>
+				<li>
+					<label>密码</label>
+					<input id="employerPassword" type="password" name="userpassword" placeholder="yourpassword" readonly>
+				</li>
+				<li>
+					<label>邮箱</label>
+					<input id="employerEmail" type="text" name="useremail" placeholder="youremail">
+				</li>
+			</ul>
+		</form>
+	</div>
+
+    <p>
+		<a id="modifyPwd" class="btn">
+			修改密码
+		</a>
+        <a id="modifyInfo" class="btn">
+            修改个人信息
+        </a>
+		<a id="logout" class="btn1">
+			注销
+		</a>
+    </p>
+</section>
+<section class="panelL">
+	<p class="avatar"></p>
+	<h2>标注数据</h2>
+	<div class="contact">
+		<form action="#" method="post" name="cForm">
+			<ul>
+				<li>
+					<label>已发布任务</label>
+					<input id="publishedNum" type="text" name="published" placeholder="0" readonly>
+				</li>
+				<li>
+					<label>进行中任务</label>
+					<input id="underwayNum" type="text" name="underway" placeholder="0" readonly>
+				</li>
+				<li>
+					<label>已完成任务</label>
+					<input id="completedNum" type="text" name="completed" placeholder="0" readonly>
+				</li>
+			</ul>
+		</form>
+	</div>
+</section>
+
+<section id="messageP" class="panelM none">
+	<div class="contentM">
+		<ul class="venus-menuM">
+			<li class="active"><a href="#">未读</a></li>
+			<li><a href="#">已读</a></li>
+		</ul>
+	</div>
+	<div id='messageBox' class="scroll"></div>
+	<div>
+		<a id="read" class="btn2" onclick="readButton()">
+			全部标为已读
+		</a>
+	</div>
+</section>
+
+<script>
+    var employerId = localStorage.getItem("userId");
+    var dpId="";
+    var taskAmount;
+    var taskUnderway;
+    var taskCompleted;
+    showEmployerInfo();
+    function showEmployerInfo() {
+        $.ajax({
+            type: 'POST',
+            url:"/EmployerInfo/showEmployerInfo",
+            data: {
+                employerId:employerId
+            },
+            success:function(result){
+                document.getElementById("employerName").value=result.employerName;
+                document.getElementById("employerId").value=result.employerId;
+                document.getElementById("employerPassword").value=result.employerPassword;
+                document.getElementById("employerEmail").value=result.employerEmail;
+                document.getElementById('dp').src=result.dpId;
+                document.getElementById('publishedNum').value=result.taskAmount;
+                document.getElementById('underwayNum').value=result.taskUnderway;
+                document.getElementById('completedNum').value=result.taskCompleted;
+            },
+            error:function(result){
+                alert("error");
+            }
+        });
+    }
+
+    $('#modifyPwd').click(function () {
+        var employerName = document.getElementById("employerName").value;
+        var employerPassword = document.getElementById("employerPassword").value;
+        var employerEmail = document.getElementById("employerEmail").value;
+        dpId=document.getElementById('dp').src;
+        swal({
+                title: "修改密码",
+                text: "请输入原密码",
+                type: "input",
+                showCancelButton: true,
+                closeOnConfirm: false,
+                animation: "slide-from-top",
+                inputPlaceholder: "password"
+            },
+            function (oldPwd) {
+                if (oldPwd != employerPassword) {
+                    swal.showInputError("原密码错误");
+                }
+                else {
+                    swal({
+                            title: "修改密码",
+                            text: "请输入新密码",
+                            type: "input",
+                            showCancelButton: true,
+                            closeOnConfirm: false,
+                            animation: "slide-from-top",
+                            inputPlaceholder: "password"
+                        },
+                        function (newPwd) {
+                            if (newPwd.length < 6) {
+                                swal.showInputError("密码长度至少为6");
+                            }
+                            else {
+                                swal({
+                                        title: "修改密码",
+                                        text: "请确认新密码",
+                                        type: "input",
+                                        cancelButtonText: "取消",
+                                        confirmButtonText: "确认",
+                                        showCancelButton: true,
+                                        showLoaderOnConfirm: true,
+                                        closeOnConfirm: false,
+                                        animation: "slide-from-top",
+                                        inputPlaceholder: "password"
+                                    },
+                                    function (newPwd2) {
+                                        if (newPwd != newPwd2) {
+                                            swal.showInputError("确认密码错误");
+                                        }
+                                        else {
+                                            var info = {
+                                                employerName:employerName,
+                                                employerId:employerId,
+                                                employerPassword:newPwd2,
+                                                employerEmail:employerEmail,
+                                                dpId:dpId,
+                                                taskAmount:taskAmount,
+                                                taskUnderway:taskUnderway,
+                                                taskCompleted:taskCompleted
+                                            };
+                                            $.ajax({
+                                                type: 'POST',
+                                                url:"/EmployerInfo/modifyEmployerInfo",
+                                                contentType: "application/json",
+                                                data: JSON.stringify(info),
+                                                success:function(result){
+                                                    if(result == true){
+                                                        showEmployerInfo();
+                                                        setTimeout(function () {
+                                                            swal("修改成功", "密码已更新", "success");
+                                                        }, 1500);
+                                                    }
+                                                },
+                                                error:function(result){
+                                                    alert("error");
+                                                }
+                                            });
+                                        }
+                                    });
+                            }
+                        });
+                }
+            });
+    });
+
+    $('#modifyInfo').click(function () {
+        var employerName = document.getElementById("employerName").value;
+        var employerPassword = document.getElementById("employerPassword").value;
+        var employerEmail = document.getElementById("employerEmail").value;
+        dpId=document.getElementById('dp').src;
+        var info = {
+            employerName:employerName,
+            employerId:employerId,
+            employerPassword:employerPassword,
+            employerEmail:employerEmail,
+            dpId:dpId,
+            taskAmount:taskAmount,
+            taskUnderway:taskUnderway,
+            taskCompleted:taskCompleted
+        };
+        swal({
+                title: "确定修改您的个人信息吗",
+                text: "点击确认进行修改",
+                type: "warning",
+                cancelButtonText:"取消",
+                confirmButtonText:"确认",
+                showCancelButton: true,
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true
+            },
+            function(){
+                $.ajax({
+                    type: 'POST',
+                    url:"/EmployerInfo/modifyEmployerInfo",
+                    contentType: "application/json",
+                    data: JSON.stringify(info),
+                    success:function(result){
+                        if(result == true){
+                            showEmployerInfo();
+                        }
+                    },
+                    error:function(result){
+                        alert("error");
+                    }
+                });
+                setTimeout(function(){
+                    swal("修改成功","个人信息已更新","success");
+                }, 1500);
+            });
+    })
+
+    $('#logout').click(function () {
+        swal({
+                title: "确定注销该账号吗？",
+                text: "点击确认进行注销",
+                type: "warning",
+                cancelButtonText:"取消",
+                confirmButtonText:"确认",
+                showCancelButton: true,
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true
+            },
+            function(){
+                swal("注销成功","您已退出本系统","success");
+                setTimeout(function(){
+                    window.location.href='CrowdSourcingTags';
+                    window.event.returnValue=false;
+                }, 1500);
+            });
+    });
+</script>
+<script>
+    window.onload=function(){
+        img_upload=document.getElementById("img_upload");
+        // 添加功能出发监听事件
+        img_upload.addEventListener('change',readFile,false);
+        function readFile(){
+            var file=this.files[0];
+            if(!/image\/\w+/.test(file.type)){
+                alert("请确保文件为图像类型");
+                return false;
+            }
+            var reader=new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload=function(){
+                document.getElementById("dp").src= this.result;
+            }
+        }
+    }
+</script>
+</body>
+</html>

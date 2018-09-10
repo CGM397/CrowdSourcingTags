@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1.0, maximum-scale=1" ,user-scalable="no">
+    <title>employer-user</title>
+    <link href="css/zzsc.css" rel="stylesheet">
+    <link href="css/maps.css" rel="stylesheet">
+	<link href="css/recommend.css" rel="stylesheet"  />
+    <link href="css/message.css" rel="stylesheet">
+	<link href="fonts/css/font-awesome.css" rel="stylesheet">
+    <link href="fonts/fonts/fontawesome-webfont.ttf" rel="stylesheet">
+    <link href="fonts/fonts/fontawesome-webfont.woff" rel="stylesheet">
+    <link href="fonts/fonts/fontawesome-webfont.woff2" rel="stylesheet">
+    <script src="js/sweetalert.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/sweetalert.css">
+	<link rel="stylesheet" href="css/user_style.css">
+    <script type="text/javascript" src="js/maps.js"></script>
+    <script type="text/javascript" src="js/google.js"></script>
+	<script type="text/javascript" src="js/recommend.js"></script>
+    <script type="text/javascript" src="js/message.js"></script>
+    <script type="text/javascript" src="js/vue.min.js"></script>
+    <script type="text/javascript">$(document).ready(function(){$().maps();});</script>
+    <script type="text/javascript">$(function (){
+        $('#nky2 li:not(#nky2 li:last)').click(function (){
+            $('.active').removeClass('active');
+            $(this).addClass("active");
+        });
+        $('.venus-menuM li').click(function(){
+            $('.venus-menuM li.active').removeClass('active');
+            $(this).addClass("active");
+            var mode=document.getElementById('read').innerText;
+            document.getElementById('read').innerText=(mode=='全部标为已读')?'删除已读':'全部标为已读';
+            if(mode=="全部标为已读"){
+                document.getElementById('read').innerText='删除已读';
+                refreshRead();
+            }
+            else{
+                document.getElementById('read').innerText='全部标为已读';
+                refreshNew();
+            }
+        });
+    })
+	</script>
+    <script type="text/javascript">{
+        function openM(){
+            if(document.getElementById('messageP').className=='panelM') {
+                document.getElementById('messageP').className = 'panelM none';
+            }
+            else {
+                document.getElementById('messageP').className = 'panelM';
+            }
+        }
+	}
+    </script>
+	
+	<!--点击头像实现修改-->
+    <style> 
+		.panelA{
+			 position: absolute;
+             text-align: center;
+             background-color: white;
+             width: 94%;
+			 height: 85%;
+             border-radius: 10px; 
+             padding: 1px;
+             left:3%;top:11.5%;
+             transition: box-shadow .30s;
+       
+		}
+		.panelA:hover{
+             box-shadow: #fff 5px 5px 25px;
+           }
+		.panelS{
+		     position: absolute;
+             text-align: center;
+             background-color: #F8F8F8;
+             width: 50%;
+			 height: 35%;
+             border-radius: 10px; 
+			 border-style:solid;
+			 border-color:#E8E8E8;
+             padding: 1px;
+             left:25%;top:5%;
+             transition: box-shadow .30s;
+		}
+		.panelS:hover{
+             box-shadow: #fff 5px 5px 25px;
+        }
+		h1{
+		     font-size:25px;
+		}
+		.cut-off{
+		     width:100%;
+			 height:50%;
+		     border-bottom-style:ridge;
+			 border-bottom-color:#E8E8E8;
+		}
+		.detailInfo{
+		     outline:none;
+			 border:0px;
+			 font-size:18px;
+			 width:100%;
+			 text-align:center;
+			 background:#F8F8F8;
+		}
+		.stayBtn{
+		     cursor:pointer;
+	         position: relative;
+             color: black;
+             background: #8ECB8D;
+             font-size: 18px;
+			 width: 20%;
+			 margin-top:5%;
+             height: 30px;
+             padding:5px 0px;
+             border-radius: 10px;
+             display: inline-block;
+             text-decoration: none;
+             transition: background .15s;
+		}
+		.stayBtn:hover{
+		     color:white;
+		}
+		.leaveBtn{
+		     cursor:pointer;
+	         position: relative;
+             color: black;
+             background: #8ECB8D;
+             font-size: 18px;
+			 width: 20%;
+			 margin-top:5%;
+             height: 30px;
+             padding:5px 0px;
+             border-radius: 10px;
+             display: inline-block;
+             text-decoration: none;
+             transition: background .15s;
+		}
+		.leaveBtn:hover{
+		     color:white;
+		}
+		.describe{
+		    margin-top：55%；
+		}
+	</style>
+	
+</head>
+
+<body>
+
+<div class="content">
+    <ul id="nky2" class="venus-menu">
+        <li><a href="employee-home"><i class="icon-home"></i>主页</a></li>
+        <li><a href="#"><i class="icon-user"></i>个人</a><ul>
+            <li><a href="employee-info">个人信息</a></li>
+            <li><a href="employee-data">统计信息</a></li>
+        </ul></li>
+        <li class="active"><a href="#"><i class="icon-tasks"></i>任务</a><ul>
+            <li><a href="employee-newTask">接收新任务</a></li>
+            <li><a href="employee-underway">进行中任务</a></li>
+            <li><a href="employee-completed">已完成任务</a></li>
+        </ul></li>
+        <li><a href="employee-canvas"><i class="icon-pencil"></i>画布</a></li>
+        <li><a href="employee-contact"><i class="icon-envelope-alt"></i>联系我们</a></li>
+        <li style="float:right" onclick="openM()"><a href="#"><i class="fa fa-envelope-open-o" aria-hidden="true"></i>信息</a></li>
+    </ul>
+</div>
+
+<section class="panelA">
+    <div class="cut-off">
+       <section class="panelS"> 
+	      <div style="margin-top:5%">
+		      <h1>接收成功</h1>
+		  </div>
+		  <div style="margin-top:1%">
+		      <input class="detailInfo" type="text" placeholder="众包工人XXX于XXXXX成功接收任务XXXX">
+			  <div>(正确完成任务将获得更多积分奖励)</div>
+		  </div>
+		  <div>
+		      <a class="stayBtn">我再逛逛</a>
+			  <a class="leaveBtn">去完成</a>
+		  </div>
+	   </section>
+	</div>
+	<div class="describe">
+	   <div style="font-size:25px;float:left;margin-left:3%;margin-top:2%">任务推荐：</div>
+	   <div class="recommend1">
+        <ul>
+            <li class="con">
+                <img class="recommendPic"/>
+                <div class="txt1">
+                    <h3 class="recommendH">任务一</h3>
+                    <p class="recommendP">任务描述</p>
+                </div>
+            </li>
+            <li class="con">
+                <img class="recommendPic"/>
+                <div class="txt1">
+                    <h3 class="recommendH">任务二</h3>
+                    <p class="recommendP">任务描述</p>
+                </div>
+            </li>
+            <li class="con">
+                <img class="recommendPic"/>
+                <div class="txt1">
+                    <h3 class="recommendH">任务三</h3>
+                    <p class="recommendP">任务描述</p>
+                </div>
+            </li>
+            <li class="con">
+                <img class="recommendPic"/>
+                <div class="txt1">
+                    <h3 class="recommendH">任务四</h3>
+                    <p class="recommendP">任务描述</p>
+                </div>
+            </li>
+            <li class="con">
+                <img class="recommendPic"/>
+                <div class="txt1">
+                    <h3 class="recommendH">任务五</h3>
+                    <p class="recommendP">任务描述</p>
+                </div>
+            </li>
+        </ul>
+    </div>
+	</div>
+</section>
+<script>
+    $('.stayBtn').click(function () {
+	      window.location.href="employee-newTask";
+		  window.event.returnValue=false;
+	})
+	$('.leaveBtn').click(function () {
+	      window.location.href="employee-canvas";
+		  window.event.returnValue=false;
+	})
+	
+</script>
+
+<section id="messageP" class="panelM none">
+    <div class="contentM">
+        <ul class="venus-menuM">
+            <li class="active"><a href="#">未读</a></li>
+            <li><a href="#">已读</a></li>
+        </ul>
+    </div>
+    <div id='messageBox' class="scroll"></div>
+    <div>
+        <a id="read" class="btn2" onclick="readButton()">
+            全部标为已读
+        </a>
+    </div>
+</section>
+
+<script>
+    var userId=localStorage.getItem('userId');
+    var taskId3=localStorage.getItem('taskId');
+    document.getElementsByClassName('detailInfo')[0].placeholder="众包工人"+userId+"成功接收任务"+taskId3;
+    getRecommendSimilar();
+    var cons= document.getElementsByClassName('con');
+    var ps=document.getElementsByClassName('recommendP');
+    for(var i=0;i<cons.length;i++){
+        cons[i].index=i;
+        cons[i].onclick=function() {
+            localStorage.setItem('taskId',ps[this.index].innerHTML.substr(0,19));
+            window.location.href='employee-taskDetail';
+            window.event.returnValue=false;
+        }
+    }
+</script>
+</body></html>

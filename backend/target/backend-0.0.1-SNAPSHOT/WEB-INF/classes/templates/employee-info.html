@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>employee-home</title>
+    <link href="css/zzsc.css" rel="stylesheet">
+    <link href="css/maps.css" rel="stylesheet">
+    <link href="fonts/css/font-awesome.css" rel="stylesheet">
+    <link href="fonts/fonts/fontawesome-webfont.ttf" rel="stylesheet">
+    <link href="fonts/fonts/fontawesome-webfont.woff" rel="stylesheet">
+    <link href="fonts/fonts/fontawesome-webfont.woff2" rel="stylesheet">
+    <link rel="stylesheet" href="css/user_style.css">
+    <script type="text/javascript" src="js/message.js"></script>
+    <link href="css/message.css" rel="stylesheet">
+    <script type="text/javascript" src="js/maps.js"></script>
+    <script type="text/javascript" src="js/google.js"></script>
+    <script src="js/sweetalert.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/sweetalert.css">
+    <script type="text/javascript">$(document).ready(function(){$().maps();});</script>
+    <script type="text/javascript">$(function (){
+        $('#nky2 li:not(#nky2 li:last)').click(function (){
+            $('.active').removeClass('active');
+            $(this).addClass("active");
+        });
+        $('.venus-menuM li').click(function(){
+            $('.venus-menuM li.active').removeClass('active');
+            $(this).addClass("active");
+            var mode=document.getElementById('read').innerText;
+            document.getElementById('read').innerText=(mode=='全部标为已读')?'删除已读':'全部标为已读';
+            if(mode=="全部标为已读"){
+                document.getElementById('read').innerText='删除已读';
+                refreshRead();
+            }
+            else{
+                document.getElementById('read').innerText='全部标为已读';
+                refreshNew();
+            }
+        });
+    })
+    </script>
+    <style>
+         .content>ul>li:last-child>ul>li>a{
+            width:300px;
+            font-size:10px;
+            float:right;
+         }
+    </style>
+
+</head>
+
+<body>
+
+<div style="text-align:center;clear:both">
+    <script src="/gg_bd_ad_720x90.js" type="text/javascript"></script>
+    <script src="/follow.js" type="text/javascript"></script>
+</div>
+<div class="content">
+    <ul id="nky2" class="venus-menu">
+        <li><a href="employee-home"><i class="icon-home"></i>主页</a></li>
+        <li  class="active"><a href="#"><i class="icon-user"></i>个人</a><ul>
+            <li><a href="employee-info">个人信息</a></li>
+            <li><a href="employee-data">统计信息</a></li>
+        </ul></li>
+        <li><a href="#"><i class="icon-tasks"></i>任务</a><ul>
+            <li><a href="employee-newTask">接收新任务</a></li>
+            <li><a href="employee-underway">进行中任务</a></li>
+            <li><a href="employee-completed">已完成任务</a></li>
+        </ul></li>
+        <li><a href="employee-canvas"><i class="icon-pencil"></i>画布</a></li>
+        <li><a href="employee-contact"><i class="icon-envelope-alt"></i>联系我们</a></li>
+        <li style="float:right" onclick="openM()"><a href="#"><i class="fa fa-envelope-open-o" aria-hidden="true"></i>信息</a></li>
+    </ul>
+</div>
+
+<section class="panel">
+    <p class="avatar">
+        <input id="img_upload" type="file" style="cursor:pointer; opacity:0; filter:alpha(opacity=0); height: 120px; width: 120px; position: absolute; top: -7.5%; left: 40%; z-index: 9;"  title="点击头像上传自定义头像" onchange="handleFiles(this,'icon')">
+        <img id='dp' alt=""><!--头像放置处-->
+    </p>
+    <h2>个人信息</h2>
+    <div class="contact">
+        <form action="#" method="post" name="cForm">
+            <ul>
+                <li>
+                    <label>用户名</label>
+                    <input id="employeeName" type="text" name="username" placeholder="yourname">
+                </li>
+                <li>
+                    <label>用户身份</label>
+                    <input id="employeeIdentity" type="text" name="useridentity" placeholder="众包工人" readonly>
+                </li>
+                <li>
+                    <label>账号</label>
+                    <input id="employeeId" type="text" name="useraccount" placeholder="youraccount" readonly>
+                </li>
+                <li>
+                    <label>密码</label>
+                    <input id="employeePassword" type="password" name="userpassword" placeholder="yourpassword" readonly>
+                </li>
+                <li>
+                    <label>邮箱</label>
+                    <input id="employeeEmail" type="text" name="useremail" placeholder="youremail">
+                </li>
+            </ul>
+        </form>
+    </div>
+
+    <p>
+        <a id="modifyPwd" class="btn">
+            修改密码
+        </a>
+        <a id="modifyInfo" class="btn">
+            修改个人信息
+        </a>
+        <a id="logout" class="btn1">
+            注销
+        </a>
+    </p>
+</section>
+<section class="panelL">
+    <p class="avatar"></p>
+    <h2>标注数据</h2>
+    <div class="contact">
+        <form action="#" method="post" name="cForm">
+            <ul>
+                <li>
+                    <label>总奖励</label>
+                    <input id="bonus" type="text" name="bonus" placeholder="0" readonly>
+                </li>
+                <li>
+                    <label>已接收任务</label>
+                    <input id="chosenNum" type="text" name="chosen" placeholder="0" readonly>
+                </li>
+                <li>
+                    <label>进行中任务</label>
+                    <input id="underwayNum" type="text" name="underway" placeholder="0" readonly>
+                </li>
+                <li>
+                    <label>已完成任务</label>
+                    <input id="completedNum" type="text" name="completed" placeholder="0" readonly>
+                </li>
+                <li>
+                    <label>标注时间</label>
+                    <input id="speed" type="text" name="speed" placeholder="0" readonly>
+                </li>
+                <li>
+                    <label>标注准确度</label>
+                    <input id="accuracy" type="text" name="accuracy" placeholder="0" readonly>
+                </li>
+                <li>
+                    <label>标注积分</label>
+                    <input id="integral" type="text" name="integral" placeholder="0" readonly>
+                </li>
+            </ul>
+        </form>
+    </div>
+</section>
+<script>
+    var employeeId = localStorage.getItem("userId");
+    var dpId="";
+    var awardAmount;
+    var taskAmount;
+    var taskUnderway;
+    var taskCompleted;
+    var annotationJudgement = {
+        accuracy:0,
+        efficiency:0,
+        grade:0
+    };
+    var reportedTimes = 0;
+    showEmployeeInfo();
+    function showEmployeeInfo() {
+        $.ajax({
+            type: 'POST',
+            url:"/EmployeeInfo/showEmployeeInfo",
+            data: {
+                employeeId:employeeId
+            },
+            success:function(result){
+                document.getElementById("employeeName").value=result.employeeName;
+                document.getElementById("employeeId").value=result.employeeId;
+                document.getElementById("employeePassword").value=result.employeePassword;
+                document.getElementById("employeeEmail").value=result.employeeEmail;
+                document.getElementById('dp').src=result.dpId;
+                document.getElementById('bonus').value=result.awardAmount;
+                document.getElementById('chosenNum').value=result.taskAmount;
+                document.getElementById('underwayNum').value=result.taskUnderway;
+                document.getElementById('completedNum').value=result.taskCompleted;
+                document.getElementById('speed').value=result.judgement.efficiency.toFixed(2);
+                document.getElementById('accuracy').value=result.judgement.accuracy.toFixed(2);
+                document.getElementById('integral').value=result.judgement.grade.toFixed(2);
+                annotationJudgement.accuracy=result.judgement.accuracy;
+                annotationJudgement.grade=result.judgement.grade;
+                annotationJudgement.efficiency=result.judgement.efficiency;
+                reportedTimes=result.reportedTimes;
+            },
+            error:function(result){
+                alert("error");
+            }
+        });
+    }
+
+    $('#modifyPwd').click(function () {
+        var employeeName = document.getElementById("employeeName").value;
+        var employeePassword = document.getElementById("employeePassword").value;
+        var employeeEmail = document.getElementById("employeeEmail").value;
+        dpId=document.getElementById('dp').src;
+        swal({
+                title: "修改密码",
+                text: "请输入原密码",
+                type: "input",
+                showCancelButton: true,
+                closeOnConfirm: false,
+                animation: "slide-from-top",
+                inputPlaceholder: "password"
+            },
+            function (oldPwd) {
+                if (oldPwd != employeePassword) {
+                    swal.showInputError("原密码错误");
+                }
+                else {
+                    swal({
+                            title: "修改密码",
+                            text: "请输入新密码",
+                            type: "input",
+                            showCancelButton: true,
+                            closeOnConfirm: false,
+                            animation: "slide-from-top",
+                            inputPlaceholder: "password"
+                        },
+                        function (newPwd) {
+                            if (newPwd.length < 6) {
+                                swal.showInputError("密码长度至少为6");
+                            }
+                            else {
+                                swal({
+                                        title: "修改密码",
+                                        text: "请确认新密码",
+                                        type: "input",
+                                        cancelButtonText: "取消",
+                                        confirmButtonText: "确认",
+                                        showCancelButton: true,
+                                        showLoaderOnConfirm: true,
+                                        closeOnConfirm: false,
+                                        animation: "slide-from-top",
+                                        inputPlaceholder: "password"
+                                    },
+                                    function (newPwd2) {
+                                        if (newPwd != newPwd2) {
+                                            swal.showInputError("确认密码错误");
+                                        }
+                                        else {
+                                            var info = {
+                                                employeeName:employeeName,
+                                                employeeId:employeeId,
+                                                employeePassword:newPwd2,
+                                                employeeEmail:employeeEmail,
+                                                dpId:dpId,
+                                                taskAmount:taskAmount,
+                                                taskUnderway:taskUnderway,
+                                                taskCompleted:taskCompleted,
+                                                judgement:annotationJudgement,
+                                                reportedTimes:reportedTimes
+                                            };
+                                            $.ajax({
+                                                type: 'POST',
+                                                url:"/EmployeeInfo/modifyEmployeeInfo",
+                                                contentType: "application/json",
+                                                data: JSON.stringify(info),
+                                                success:function(result){
+                                                    if(result == true){
+                                                        showEmployeeInfo();
+                                                        setTimeout(function () {
+                                                            swal("修改成功", "密码已更新", "success");
+                                                        }, 1500);
+                                                    }
+                                                },
+                                                error:function(result){
+                                                    alert("error");
+                                                }
+                                            });
+                                        }
+                                    });
+                            }
+                        });
+                }
+            });
+    });
+
+    $('#modifyInfo').click(function () {
+        var employeeName = document.getElementById("employeeName").value;
+        var employeePassword = document.getElementById("employeePassword").value;
+        if(employeePassword.length<6){
+            swal("修改失败","密码长度至少为6","warning");
+            return;
+        }
+        var employeeEmail = document.getElementById("employeeEmail").value;
+        dpId=document.getElementById('dp').src;
+        var info = {
+            employeeName:employeeName,
+            employeeId:employeeId,
+            employeePassword:employeePassword,
+            employeeEmail:employeeEmail,
+            dpId:dpId,
+            awardAmount:awardAmount,
+            taskAmount:taskAmount,
+            taskUnderway:taskUnderway,
+            taskCompleted:taskCompleted,
+            judgement:annotationJudgement,
+            reportedTimes:reportedTimes
+        };
+        swal({
+                title: "确定修改您的个人信息吗",
+                text: "点击确认进行修改",
+                type: "warning",
+                cancelButtonText:"取消",
+                confirmButtonText:"确认",
+                showCancelButton: true,
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true
+            },
+            function(){
+                $.ajax({
+                    type: 'POST',
+                    url:"/EmployeeInfo/modifyEmployeeInfo",
+                    contentType: "application/json",
+                    data: JSON.stringify(info),
+                    success:function(result){
+                        if(result == true){
+                            showEmployeeInfo();
+                        }
+                    },
+                    error:function(result){
+                        alert("error");
+                    }
+                });
+                setTimeout(function(){
+                    swal("修改成功","个人信息已更新","success");
+                }, 1500);
+            });
+    });
+
+    $('#logout').click(function () {
+        swal({
+                title: "确定注销该账号吗？",
+                text: "点击确认进行注销",
+                type: "warning",
+                cancelButtonText:"取消",
+                confirmButtonText:"确认",
+                showCancelButton: true,
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true
+            },
+            function(){
+                swal("注销成功","您已退出本系统","success");
+                setTimeout(function(){
+                    window.location.href='CrowdSourcingTags';
+                    window.event.returnValue=false;
+                }, 1500);
+            });
+    });
+</script>
+
+<script>
+    window.onload=function(){
+        img_upload=document.getElementById("img_upload");
+        // 添加功能出发监听事件
+        img_upload.addEventListener('change',readFile,false);
+        function readFile(){
+            var file=this.files[0];
+            if(!/image\/\w+/.test(file.type)){
+                alert("请确保文件为图像类型");
+                return false;
+            }
+            var reader=new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload=function(){
+                document.getElementById("dp").src= this.result;
+            }
+        }
+    }
+</script>
+
+<section id="messageP" class="panelM none">
+    <div class="contentM">
+        <ul class="venus-menuM">
+            <li class="active"><a href="#">未读</a></li>
+            <li><a href="#">已读</a></li>
+        </ul>
+    </div>
+    <div id='messageBox' class="scroll"></div>
+    <div>
+        <a id="read" class="btn2" onclick="readButton()">
+            全部标为已读
+        </a>
+    </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>admin</title>
+    <link href="css/zzsc.css" rel="stylesheet">
+    <script type="text/javascript" src="js/maps.js"></script>
+    <script type="text/javascript" src="js/google.js"></script>
+	<script type="text/javascript" src="js/echarts.js"></script>
+    <script type="text/javascript" src="js/adminData.js"></script>
+    <script type="text/javascript">$(document).ready(function(){$().maps();});</script>
+</head>
+
+<style type="text/css">  
+        /* css 重置 */
+        .chart{width:1000px;height:700px;margin:150px 420px;position:absolute;}
+        *{margin:0; padding:0; list-style:none; }  
+        body{font:14px/150% "Microsoft YaHei", Arial,"宋体",sans-serif; text-align:center }   
+        html{  overflow-x:hidden; overflow-y:hidden; }/* html加上这段代码用于取消ie6滚动时候元素震动bug */
+		 a{ text-decoration:none; color:#333;  }  
+         a:hover{ text-decoration:underline;   }
+        .sideGuide{ position:fixed;  _position:absolute;  z-index:1; left:50px; top:150px; width:200px; background:#fff;   }
+        .sideGuide h3{ height:40px; line-height:40px; background:#f50; font-weight:bold; color:#fff;   }  
+        .sideGuide ul{ padding:10px 0; }  
+        .sideGuide li{ height:32px; line-height:32px; position:relative; border-bottom:1px solid #f4f4f4; vertical-align:middle;  }  
+        .sideGuide li s{ display:none; position:absolute; top:0; left:-10px; width:10px; background:#555; height:32px;     }  
+        .sideGuide li a{ display:block; color:#999;   }  
+        .sideGuide li a:hover{ text-decoration:none; color:#f50;  }  
+        .sideGuide li.on s{ display:block;  }  
+        .sideGuide li.on a{ background:#f4f4f4; color:#333;  }  
+</style>
+
+<body>
+<div style="text-align:center;clear:both">
+    <script src="/gg_bd_ad_720x90.js" type="text/javascript"></script>
+    <script src="/follow.js" type="text/javascript"></script>
+</div>
+<div class="content">
+    <ul id="nky2" class="venus-menu">
+        <li><a href="employee-home.html"><i class="icon-home"></i>管理员</a></li>
+    </ul>
+
+
+	<div>
+            <div id="art1" class="article">
+                <div id="chartmain"  class='chart' ></div>
+            </div>
+            <div id="art2" class="article">
+                <div id="chartmain2" class='chart' ></div>
+            </div>
+			<div id="art3" class="article">
+                <div id="chartmain3" class='chart'></div>
+            </div>
+            <div id="art4" class="article">
+                <div id="chartmain4" class='chart' ></div>
+            </div>
+			<div id="art5" class="article">
+                <div id="chartmain5" class='chart' ></div>
+            </div>
+			<div id="art6" class="article">
+                <div id="chartmain6" class='chart' ></div>
+            </div>
+			<div id="art7" class="article">
+                <div id="chartmain7" class='chart' ></div>
+            </div>
+			<div id="art8" class="article">
+                <div id="chartmain8" class='chart' ></div>
+			<div class="sideGuide">
+                <h3>统计信息</h3>
+                <ul>
+                    <li class="on"><a href="#">用户组成</a><s></s></li>
+                    <li><a href="#">发布任务排名</a><s></s></li>
+                    <li><a href="#">完成任务排名（发起者）</a><s></s></li>
+                    <li><a href="#">完成任务排名（工人）</a><s></s></li>
+                    <li><a href="#">累计奖励排名</a><s></s></li>
+					<li><a href="#">当前任务状态组成</a><s></s></li>
+					<li><a href="#">任务发布形式组成</a><s></s></li>
+					<li><a href="#">已完成任务-时间图</a><s></s></li>
+                </ul>
+            </div>
+    </div>
+</div>
+</div>
+
+</body>
+<!--导航跳转效果-->
+<script type="text/javascript">
+    //导航栏切换
+    (function($){
+        var goTo = $(".article");
+        var guide = $(".sideGuide");
+        var guideLi = $(".sideGuide li");
+        var index=0;
+        var direct=0;
+        //设置宽高
+        var resetFun = function(){ goTo.each(function(){  $(this).height( $(window).height() ) }); }
+        resetFun();
+        //屏幕滚动
+        var goToFun = function(){
+            direct=0;
+            if(index<0){ index=0; return }
+            if(index>=guideLi.size()){
+                index=guideLi.size()-1; return
+            }
+            $("html,body").stop().animate({ scrollTop:$(window).height()*index },800,"swing",function(){loadChart(index+1);}); guideLi.removeClass("on").eq(index).addClass("on");
+        }
+        guideLi.each(function(i){ $(this).click(function(){  index=guideLi.index( $(this) ); goToFun(); }) });
+        $(window).resize(function(){ resetFun() });
+        /* 滚轮事件 */
+        var scrollFunc=function(e){
+            e=e || window.event;
+            if(e.wheelDelta){ direct+= (-e.wheelDelta/120); }else if(e.detail){ direct+=e.detail/3 ; }
+
+            if( direct>=8 ){ goToFun( index++ ) }
+            if( direct<=-8 ){ goToFun( index-- ) }
+        }
+        if( document.addEventListener){ document.addEventListener('DOMMouseScroll',scrollFunc,false); }
+        window.onmousewheel=document.onmousewheel=scrollFunc;
+
+    })(jQuery);
+</script>
+
+<!--填充8个统计图表-->
+<script type="text/javascript">
+    //初始化echarts实例
+    var res =  getUserNum();
+    var myChart = echarts.init(document.getElementById('chartmain'));
+    //使用制定的配置项和数据显示图表
+    option = {
+        title : {
+            text: '用户类型',
+            subtext:'2018年4月25日',
+            x:'left'
+        },
+        tooltip : {
+            trigger: 'item',
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        legend: {
+            orient : 'vertical',
+            x : 'middle',
+            data:['众包发起者','众包工人']
+        },
+        toolbox: {
+            show : true,
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: false},
+                magicType : {
+                    show: true,
+                    type: ['pie', 'funnel'],
+                    option: {
+                        funnel: {
+                            x: '25%',
+                            width: '50%',
+                            funnelAlign: 'left',
+                        }
+                    }
+                },
+                restore : {show: true},
+                saveAsImage : {show: true}
+            }
+        },
+        calculable : true,
+        series : [
+            {
+                name:'用户类型',
+                type:'pie',
+                radius : '75%',
+                center: ['45%', '60%'],
+                data:[
+                    {value:res.employerNum, name:'众包发起者'},
+                    {value:res.employeeNum, name:'众包工人'},
+                ]
+            }
+        ]
+    };
+    myChart.setOption(option);
+</script>
+
+<script type="text/javascript">
+    var res =  getEmployerReleaseTaskRank();
+    var data=[];
+    var userName=[];
+    for(var i=res.length-1;i>=0;i--){
+        data.push(res[i].employerData);
+        userName.push(res[i].userName);
+    }
+    //指定图标的配置和数据
+    option = {
+        title : {
+            text: '众包发起者已发布任务排行榜',
+            subtext: '2018年4月25日'
+        },
+        tooltip : {
+            trigger: 'axis'
+        },
+        toolbox: {
+            show : true,
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: false},
+                magicType: {show: true, type: ['line', 'bar']},
+                restore : {show: true},
+                saveAsImage : {show: true}
+            }
+        },
+        calculable : true,
+        xAxis : [
+            {
+                type : 'value',
+                boundaryGap : [0, 0.01]
+            }
+        ],
+        yAxis : [
+            {
+                type : 'category',
+                data : userName
+            }
+        ],
+        series : [
+            {
+                barWidth:20,
+                type:'bar',
+                data:data
+            }
+        ]
+    };
+    //初始化echarts实例
+    var myChart = echarts.init(document.getElementById('chartmain2'));
+    //使用制定的配置项和数据显示图表
+    myChart.setOption(option);
+</script>
+
+<script type="text/javascript">
+    //初始化echarts实例
+    var myChart = echarts.init(document.getElementById('chartmain3'));
+    var res = getCompletedTaskRank();
+    var data=[];
+    var userName=[];
+    for(var i=res.length-1;i>=0;i--){
+        data.push(res[i].employerData);
+        userName.push(res[i].userName);
+    }
+    //使用制定的配置项和数据显示图表
+    option = {
+        title : {
+            text: '众包发起者已完成任务排行榜',
+            subtext: '2018年4月25日'
+        },
+        tooltip : {
+            trigger: 'axis'
+        },
+        toolbox: {
+            show : true,
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: false},
+                magicType: {show: true, type: ['line', 'bar']},
+                restore : {show: true},
+                saveAsImage : {show: true}
+            }
+        },
+        calculable : true,
+        xAxis : [
+            {
+                type : 'value',
+                boundaryGap : [0, 0.01]
+            }
+        ],
+        yAxis : [
+            {
+                type : 'category',
+                data : userName
+            }
+        ],
+        series : [
+            {
+                barWidth:20,
+                type:'bar',
+                data:data
+            }
+        ]
+    };
+    myChart.setOption(option);
+</script>
+
+<script type="text/javascript">
+    var res = getEmployeeCompletedTaskRank();
+    var data=[];
+    var userName=[];
+    for(var i=res.length-1;i>=0;i--){
+        data.push(res[i].employerData);
+        userName.push(res[i].userName);
+    }
+    option = {
+        title : {
+            text: '众包工人已完成任务排行榜',
+            subtext: '2018年4月25日'
+        },
+        tooltip : {
+            trigger: 'axis'
+        },
+        toolbox: {
+            show : true,
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: false},
+                magicType: {show: true, type: ['line', 'bar']},
+                restore : {show: true},
+                saveAsImage : {show: true}
+            }
+        },
+        calculable : true,
+        xAxis : [
+            {
+                type : 'value',
+                boundaryGap : [0, 0.01]
+            }
+        ],
+        yAxis : [
+            {
+                type : 'category',
+                data : userName
+            }
+        ],
+        series : [
+            {
+                barWidth:20,
+                type:'bar',
+                data:data
+            }
+        ]
+    };
+    //初始化echarts实例
+    var myChart = echarts.init(document.getElementById('chartmain4'));
+    //使用制定的配置项和数据显示图表
+    myChart.setOption(option);
+</script>
+
+<script type="text/javascript">
+    var res = getEmployeeAwardRank();
+    var data=[];
+    var userName=[];
+    for(var i=res.length-1;i>=0;i--){
+        data.push(res[i].employerData);
+        userName.push(res[i].userName);
+    }
+    option = {
+        title : {
+            text: '众包工人累计奖励排行榜',
+            subtext: '2018年4月25日'
+        },
+        tooltip : {
+            trigger: 'axis'
+        },
+        toolbox: {
+            show : true,
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: false},
+                magicType: {show: true, type: ['line', 'bar']},
+                restore : {show: true},
+                saveAsImage : {show: true}
+            }
+        },
+        calculable : true,
+        xAxis : [
+            {
+                type : 'value',
+                boundaryGap : [0, 0.01]
+            }
+        ],
+        yAxis : [
+            {
+                type : 'category',
+                data : userName
+            }
+        ],
+        series : [
+            {
+                barWidth:20,
+                type:'bar',
+                data:data
+            }
+        ]
+    };
+    //初始化echarts实例
+    var myChart = echarts.init(document.getElementById('chartmain5'));
+    //使用制定的配置项和数据显示图表
+    myChart.setOption(option);
+</script>
+
+<script type="text/javascript">
+    //初始化echarts实例
+    var res =  getTaskCondition();
+    var myChart = echarts.init(document.getElementById('chartmain6'));
+    //使用制定的配置项和数据显示图表
+    option = {
+        title : {
+            text: '任务状态汇总',
+            subtext:'2018年4月25日',
+            x:'left'
+        },
+        tooltip : {
+            trigger: 'item',
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        legend: {
+            orient : 'vertical',
+            x : 'middle',
+            data:['进行中任务','已完成任务']
+        },
+        toolbox: {
+            show : true,
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: false},
+                magicType : {
+                    show: true,
+                    type: ['pie', 'funnel'],
+                    option: {
+                        funnel: {
+                            x: '25%',
+                            width: '50%',
+                            funnelAlign: 'left',
+                        }
+                    }
+                },
+                restore : {show: true},
+                saveAsImage : {show: true}
+            }
+        },
+        calculable : true,
+        series : [
+            {
+                name:'任务状态',
+                type:'pie',
+                radius : '75%',
+                center: ['45%', '60%'],
+                data:[
+                    {value:res.underway, name:'进行中任务'},
+                    {value:res.completed, name:'已完成任务'},
+                ]
+            }
+        ]
+    };
+    myChart.setOption(option);
+</script>
+
+<script type="text/javascript">
+    //初始化echarts实例
+    var res =  getTaskTypeInfo();
+    var myChart = echarts.init(document.getElementById('chartmain7'));
+    //使用制定的配置项和数据显示图表
+    option = {
+        title : {
+            text: '任务发布形式汇总',
+            subtext:'2018年4月25日',
+            x:'left'
+        },
+        tooltip : {
+            trigger: 'item',
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        legend: {
+            orient : 'vertical',
+            x : 'middle',
+            data:['自由发布','指派发布']
+        },
+        toolbox: {
+            show : true,
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: false},
+                magicType : {
+                    show: true,
+                    type: ['pie', 'funnel'],
+                    option: {
+                        funnel: {
+                            x: '25%',
+                            width: '50%',
+                            funnelAlign: 'left',
+                        }
+                    }
+                },
+                restore : {show: true},
+                saveAsImage : {show: true}
+            }
+        },
+        calculable : true,
+        series : [
+            {
+                name:'任务发布形式',
+                type:'pie',
+                radius : '75%',
+                center: ['45%', '60%'],
+                data:[
+                    {value:res.openTask, name:'自由发布'},
+                    {value:res.specifyTask, name:'指派发布'},
+                ]
+            }
+        ]
+    };
+    myChart.setOption(option);
+</script>
+
+<script type="text/javascript">
+    var res =  getCompletedTaskChange();
+    var data=[];
+    var time=[];
+    for(var i=0;i<res.length;i++){
+        if((i>0)&&(res[i].finishTime!=res[i-1].finishTime+1)){
+            for(var j=1;j<res[i].finishTime-res[i-1].finishTime;j++){
+                data.push(res[i-1].finishNum);
+                time.push(res[i-1].finishTime+j);
+            }
+        }
+        data.push(res[i].finishNum);
+        time.push(res[i].finishTime);
+    }
+    option = {
+        title : {
+            text: '已完成任务—时间变化图',
+            subtext:'2018年4月25日',
+            x:'left'
+        },
+        tooltip : {
+            trigger: 'axis'
+        },
+        legend: {
+            data:['已完成任务']
+        },
+        toolbox: {
+            show : true,
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: false},
+                magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                restore : {show: true},
+                saveAsImage : {show: true}
+            }
+        },
+        calculable : true,
+        xAxis : [
+            {
+                type : 'category'  ,
+                boundaryGap : false,
+                data : time
+            }
+        ],
+        yAxis : [
+            {
+                type : 'value'
+            }
+        ],
+        series : [
+            {
+                name:'已完成任务',
+                type:'line',
+                stack: '总量',
+                data:data
+            }
+        ]
+    };
+    //初始化echarts实例
+    var myChart = echarts.init(document.getElementById('chartmain8'));
+    //使用制定的配置项和数据显示图表
+    myChart.setOption(option);
+</script>
+
+<script type="text/javascript">
+    function loadChart(index){
+        switch(index){
+            case 1:
+                setChart1();
+                break;
+            case 2:
+                setChart2();
+                break;
+            case 3:
+                setChart3();
+                break;
+            case 4:
+                setChart4();
+                break;
+            case 5:
+                setChart5();
+                break;
+            case 6:
+                setChart6();
+                break;
+            case 7:
+                setChart7();
+                break;
+            case 8:
+                setChart8();
+                break;
+            default:
+                alert("error");
+        }
+    }
+    function setChart1(){
+        var option=myChart1.getOption();
+        myChart1.clear();
+        myChart1.setOption(option);
+    }
+    function setChart2(){
+        var option=myChart2.getOption();
+        myChart2.clear();
+        myChart2.setOption(option);
+    }
+    function setChart3(){
+        var option=myChart3.getOption();
+        myChart3.clear();
+        myChart3.setOption(option);
+    }
+    function setChart4(){
+        var option=myChart4.getOption();
+        myChart4.clear();
+        myChart4.setOption(option);
+    }
+    function setChart5(){
+        var option=myChart5.getOption();
+        myChart5.clear();
+        myChart5.setOption(option);
+    }
+    function setChart6(){
+        var option=myChart6.getOption();
+        myChart6.clear();
+        myChart6.setOption(option);
+    }
+    function setChart7(){
+        var option=myChart7.getOption();
+        myChart7.clear();
+        myChart7.setOption(option);
+    }
+    function setChart8(){
+        var option=myChart8.getOption();
+        myChart8.clear();
+        myChart8.setOption(option);
+    }
+
+</script>
+
+</html>

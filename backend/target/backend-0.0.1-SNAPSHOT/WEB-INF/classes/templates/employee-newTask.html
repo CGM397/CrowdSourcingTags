@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1.0, maximum-scale=1",user-scalable=no>
+    <title>employee-home</title>
+    <link href="css/zzsc.css" rel="stylesheet">
+    <link href="css/maps.css" rel="stylesheet">
+    <link href="fonts/css/font-awesome.css" rel="stylesheet">
+    <link href="fonts/fonts/fontawesome-webfont.ttf" rel="stylesheet">
+    <link href="fonts/fonts/fontawesome-webfont.woff" rel="stylesheet">
+    <link href="fonts/fonts/fontawesome-webfont.woff2" rel="stylesheet">
+    <script type="text/javascript" src="js/message.js"></script>
+    <link href="css/message.css" rel="stylesheet">
+    <script type="text/javascript" src="js/maps.js"></script>
+    <script type="text/javascript" src="js/google.js"></script>
+    <script src="js/sweetalert.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/sweetalert.css">
+    <script type="text/javascript">$(document).ready(function(){$().maps();});</script>
+    <script type="text/javascript">$(function (){
+        $('#nky2 li:not(#nky2 li:last)').click(function (){
+            $('.active').removeClass('active');
+            $(this).addClass("active");
+        });
+        $('.venus-menuM li').click(function(){
+            $('.venus-menuM li.active').removeClass('active');
+            $(this).addClass("active");
+            var mode=document.getElementById('read').innerText;
+            document.getElementById('read').innerText=(mode=='全部标为已读')?'删除已读':'全部标为已读';
+            if(mode=="全部标为已读"){
+                document.getElementById('read').innerText='删除已读';
+                refreshRead();
+            }
+            else{
+                document.getElementById('read').innerText='全部标为已读';
+                refreshNew();
+            }
+        });
+    })
+    </script>
+    <style>
+        .content>ul>li:last-child>ul>li>a{
+            width:300px;
+            font-size:10px;
+            float:right;
+         }
+    </style>
+</head>
+
+<body>
+
+<div style="text-align:center;clear:both">
+    <script src="/gg_bd_ad_720x90.js" type="text/javascript"></script>
+    <script src="/follow.js" type="text/javascript"></script>
+</div>
+<div class="content">
+    <ul id="nky2" class="venus-menu">
+        <li><a href="employee-home"><i class="icon-home"></i>主页</a></li>
+        <li><a href="#"><i class="icon-user"></i>个人</a><ul>
+            <li><a href="employee-info">个人信息</a></li>
+            <li><a href="employee-data">统计信息</a></li>
+        </ul></li>
+        <li  class="active"><a href="#"><i class="icon-tasks"></i>任务</a><ul>
+            <li><a href="employee-newTask">接收新任务</a></li>
+            <li><a href="employee-underway">进行中任务</a></li>
+            <li><a href="employee-completed">已完成任务</a></li>
+        </ul></li>
+        <li><a href="employee-canvas"><i class="icon-pencil"></i>画布</a></li>
+        <li><a href="employee-contact"><i class="icon-envelope-alt"></i>联系我们</a></li>
+        <li style="float:right" onclick="openM()"><a href="#"><i class="fa fa-envelope-open-o" aria-hidden="true"></i>信息</a></li>
+    </ul>
+</div>
+
+
+<style>
+    #task
+    {
+        padding:20px;
+        font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+        width:100%;
+        border-collapse:collapse;
+    }
+    #task td
+    {
+        height:35px;
+        font-size:1.2em;
+        border:1px solid #98bf21;
+        padding:3px 7px 2px 7px;
+    }
+    #task th
+    {
+        font-size:1.3em;
+        text-align:left;
+        padding-left:10px;
+        padding-top:5px;
+        padding-bottom:5px;
+        background-color:#A7C942;
+        color:#ffffff;
+    }
+    #task tr.alt td
+    {
+        color:#000000;
+        background-color:#EAF2D3;
+    }
+    .settingHead{
+        margin:0px 50px 50px 50px;
+        text-align: center;
+        font-size: 50px;
+        font-style: normal;
+    }
+    .btn {
+        cursor:pointer;
+        color: white;
+        margin-top:5px;
+        background: rgb(48, 35, 174);
+        font-size: 20px;
+        line-height: 25px;
+        height: 30px;
+        padding: 0 20px;
+        border-radius: 3px;
+        display: inline-block;
+        text-decoration: none;
+        transition: background .15s;
+    }
+    .btn:hover {
+        background-color: rgb(81, 67, 224);
+    }
+    #tableSort {
+        height:40px;
+        width:130px;
+        margin-bottom:20px;
+        border-radius:5px;
+        outline: none;
+        box-shadow: 0 0 5px #ccc;
+        font-size: 18px;
+        background:#DDDDDD;
+    }
+</style>
+
+<section id="messageP" class="panelM none">
+    <div class="contentM">
+        <ul class="venus-menuM">
+            <li class="active"><a href="#">未读</a></li>
+            <li><a href="#">已读</a></li>
+        </ul>
+    </div>
+    <div id='messageBox' class="scroll"></div>
+    <div>
+        <a id="read" class="btn2" onclick="readButton()">
+            全部标为已读
+        </a>
+    </div>
+</section>
+<div class="settingHead">可接收任务</div>
+<div class="content">
+    <select id='tableSort' onchange="SortTable(this)">
+        <option  value='1'>发起时间</option>
+        <option  value='2'>任务奖励</option>
+        <option  value='2'>偏好</option>
+    </select>
+    <table id="task" class="task">
+        <tr>
+            <th width="60px"></th>
+            <th width="200px">任务ID</th>
+            <th width="300px">任务名</th>
+            <th width="300px">图片类型</th>
+            <th width="200px">发起形式</th>
+            <th width="200px">发起时间</th>
+            <th width="150px">任务奖励</th>
+            <th>详细信息</th>
+        </tr>
+    </table>
+</div>
+
+</body>
+
+<script type="text/javascript">
+    function SortTable(obj) {
+        var value = obj.options[obj.selectedIndex].text;
+        var index;
+        var table = document.getElementById('task');
+        var trs = table.rows;
+        if (value == "偏好") {
+            index = 2;
+            for (var i = 0; i < trs.length - 2; i++) {
+                for (var j = 1; j < trs.length - 1 - i; j++) {
+                    if (parseInt(trs[j].cells[index].innerHTML.length) < parseInt((trs[j + 1].cells[index].innerHTML.length))) {
+                        for (var k = 0; k < trs[0].cells.length; k++) {
+                            var temp = trs[j].cells[k].innerHTML;
+                            trs[j].cells[k].innerHTML = trs[j + 1].cells[k].innerHTML;
+                            trs[j + 1].cells[k].innerHTML = temp;
+                        }
+                    }
+                }
+            }
+        }
+        else {
+            if (value == "任务奖励") {
+                index = 6;
+                for (var i = 0; i < trs.length - 2; i++) {
+                    for (var j = 1; j < trs.length - 1 - i; j++) {
+                        if (parseInt(trs[j].cells[index].innerHTML) < parseInt((trs[j + 1].cells[index].innerHTML))) {
+                            for (var k = 0; k < trs[0].cells.length; k++) {
+                                var temp = trs[j].cells[k].innerHTML;
+                                trs[j].cells[k].innerHTML = trs[j + 1].cells[k].innerHTML;
+                                trs[j + 1].cells[k].innerHTML = temp;
+                            }
+                        }
+                    }
+                }
+            } else if (value == "发起时间") {
+                index = 5;
+                for (var i = 0; i < trs.length - 2; i++) {
+                    for (var j = 1; j < trs.length - 1 - i; j++) {
+                        var dateStr1 = trs[j].cells[index].innerHTML;
+                        var dateStr2 = trs[j + 1].cells[index].innerHTML;
+                        var date1 = dateStr1.substr(0, 4) + dateStr1.substr(5, 2) + dateStr1.substr(8, 2) + dateStr1.substr(11, 2) + dateStr1.substr(14, 2) + dateStr1.substr(17, 2);
+                        var date2 = dateStr2.substr(0, 4) + dateStr2.substr(5, 2) + dateStr2.substr(8, 2) + dateStr2.substr(11, 2) + dateStr2.substr(14, 2) + dateStr2.substr(17, 2);
+                        if (parseInt(date1)<parseInt(date2)) {
+                            for (var k = 0; k < trs[0].cells.length; k++) {
+                                var temp = trs[j].cells[k].innerHTML;
+                                trs[j].cells[k].innerHTML = trs[j + 1].cells[k].innerHTML;
+                                trs[j + 1].cells[k].innerHTML = temp;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+</script>
+</script><script>
+    var employeeId = localStorage.getItem("userId");
+    var accuracy;
+    var acceptedEmployeeId=[];
+    var appointedEmployeeId=[];
+    var ptype="";
+    var taskId="";
+    var taskName="";
+    var releaseType="";
+    var startTime="";
+    var award=0;
+    var limitTime=0;
+    var picCode;
+    var restPictures=0;
+    var recommendIds=[];
+
+    getRecommend();
+    showAvailableTask();
+    showEmployeeInfo();
+    function showEmployeeInfo() {
+        $.ajax({
+            type: 'POST',
+            url:"/EmployeeInfo/showEmployeeInfo",
+            async: false,                         //将ajax改为同步模式
+            data: {
+                employeeId:employeeId
+            },
+            success:function(result){
+                accuracy=result.judgement.accuracy;
+            },
+            error:function(result){
+                alert("error");
+            }
+        });
+    }
+    function getRecommend(){
+        var employeeId=localStorage.getItem('userId');
+        $.ajax({
+            type: 'POST',
+            url:"/EmployeeTask/recommend",
+            async: false,                         //将ajax改为同步模式
+            data: {
+                employeeId:employeeId
+            },
+            success:function(result) {
+                recommendIds=result;
+            },
+            error: function (result) {
+                alert("error");
+            }
+        });
+    }
+    function set(a) {
+        var tr=a.parentNode.parentNode;
+        var taskId = tr.cells[1].innerText;
+        localStorage.setItem("taskId", taskId);
+        window.location.href='employee-taskDetail';
+        window.event.returnValue=false;
+    }
+    function getRestPictures(taskId) {
+        $.ajax({
+            type: 'POST',
+            url: "/EmployeeTask/getRestPictures",
+            async: false,                         //将ajax改为同步模式
+            data: {
+                taskId: taskId
+            },
+            success: function (result) {
+                restPictures = result;
+            },
+            error: function (result) {
+                alert("error");
+            }
+        });
+    }
+    function acceptTask(a){
+        if(accuracy==0) {
+            swal({
+                    title: "当前无法接受任务",
+                    text: "您还未进行入门测试，是否进行",
+                    type: "warning",
+                    showCancelButton: true,
+                    closeOnConfirm: false,
+                    showLoaderOnConfirm: true,
+                    cancelButtonText: "取消",
+                    confirmButtonText: "去参加",
+                    animation: "slide-from-top",
+                },
+                function () {
+                    setTimeout(function () {
+                        window.location.href = 'employee-exam';
+                        window.event.returnValue = false;
+                    }, 2000);
+                });
+            return;
+        }
+        var tr=a.parentNode.parentNode;
+        var taskId = tr.cells[1].innerText;
+        var releaseType = tr.cells[4].innerText;
+        if(releaseType=='分块发布'){
+            getRestPictures(taskId);
+            swal({
+                    title: "确定接收该任务吗",
+                    text: "请输入接收图片数量(0 - "+restPictures+")",
+                    type: "input",
+                    showCancelButton: true,
+                    closeOnConfirm: false,
+                    inputPlaceholder: "0",
+                    allowEscapeKey:false
+                },
+                function(inputValue){
+                    if (inputValue == "0"){
+                        swal.showInputError("图片数量不得为0");
+                        return false
+                    }
+                    else if(inputValue>restPictures){
+                        swal.showInputError("图片数量不得超越上限");
+                        return false
+                    }
+                    else if (inputValue == "") {
+                        swal.showInputError("图片数量不得为空");
+                        return false
+                    }
+                    else {
+                        $.ajax({
+                            type: 'POST',
+                            url: "/EmployeeTask/partSelect",
+                            data: {
+                                employeeId: employeeId,
+                                taskId: taskId,
+                                selectedPictureNum:parseInt(inputValue)
+                            },
+                            success: function (result) {
+                                if (result == true) {
+                                    setTimeout(function () {
+                                        swal("接收成功", "接收成功", "success");
+                                        setTimeout(function () {
+                                            localStorage.setItem('taskId',taskId);
+                                            window.location.href = 'employee-accept';
+                                            window.event.returnValue = false;
+                                        }, 1000);
+                                    }, 1500);
+                                } else {
+                                    alert("接收失败");
+                                }
+                            },
+                            error: function (result) {
+                                alert("error");
+                            }
+                        });
+                    }
+                });
+        }
+        else {
+            swal({
+                    title: "确定接收该任务吗",
+                    text: "点击确认进行接收",
+                    type: "warning",
+                    cancelButtonText: "取消",
+                    confirmButtonText: "确认",
+                    showCancelButton: true,
+                    closeOnConfirm: false,
+                    showLoaderOnConfirm: true
+                },
+                function () {
+                    $.ajax({
+                        type: 'POST',
+                        url: "/EmployeeTask/select",
+                        data: {
+                            employeeId: employeeId,
+                            taskId: taskId
+                        },
+                        success: function (result) {
+                            if (result == true) {
+                                setTimeout(function () {
+                                    swal("接收成功", "接收成功", "success");
+                                    setTimeout(function () {
+                                        localStorage.setItem('taskId',taskId);
+                                        window.location.href = 'employee-accept';
+                                        window.event.returnValue = false;
+                                    }, 1000);
+                                }, 1500);
+                            } else {
+                                alert("接收失败");
+                            }
+                        },
+                        error: function (result) {
+                            alert("error");
+                        }
+                    });
+                });
+        }
+    }
+    function AddRow(picCode,id,name,ptype,type,time,award){
+        var table2=document.getElementById('task');
+        var row = document.createElement('tr'); //创建行
+        var picCell=document.createElement('td');
+        var pic=document.createElement('img');
+        pic.style.paddingTop='1.5px';
+        pic.style.float='left';
+        pic.style.width='50px';
+        pic.style.height='50px';
+        pic.style.margin='5px';
+        pic.src=picCode;
+        picCell.appendChild(pic);
+        row.appendChild(picCell);
+        var idCell = document.createElement('td'); //创建第一列id
+        idCell.innerHTML = id; //填充数据
+        row.appendChild(idCell); //加入行 ，下面类似
+        var nameCell = document.createElement('td');//创建第二列name
+        nameCell.innerHTML = name;
+        var star='<i class="icon-star" style="color:red; float:right;">';
+        for(var i=0;i<recommendIds.length;i++){
+            if(recommendIds[i]==id){
+                for(var j=0;j<5-i;j++){
+                    nameCell.innerHTML+=star;
+                }
+                break;
+            }
+        }
+        row.appendChild(nameCell);
+        var ptypeCell = document.createElement('td');//创建第三列ptype
+        ptypeCell.innerHTML = ptype;
+        row.appendChild(ptypeCell);
+        var typeCell = document.createElement('td');//创建第四列type
+        typeCell.innerHTML = type;
+        row.appendChild(typeCell);
+        var timeCell = document.createElement('td');//创建第五列time
+        timeCell.innerHTML = time;
+        row.appendChild(timeCell);
+        var awardCell = document.createElement('td');//创建第六列award
+        awardCell.innerHTML = award;
+        row.appendChild(awardCell);
+        //下面为每行末尾添加查看按钮
+        var checkCell = document.createElement('td');//创建第七列，操作列
+        var accept=document.createElement('a');
+        accept.innerHTML='接收';
+        accept.className='btn';
+        accept.href='#';
+        accept.onclick=function() {
+            acceptTask(this);
+        };
+        accept.style.marginLeft='20px';
+        var check=document.createElement('a');
+        check.innerHTML='查看';
+        check.className='btn';
+        check.href='#';
+        check.onclick=function() {
+            set(this);
+        };
+        checkCell.appendChild(check);
+        checkCell.appendChild(accept);
+        row.appendChild(checkCell);
+        table2.appendChild(row);
+    }
+
+    function showAvailableTask() {
+        $.ajax({
+            type: 'POST',
+            url:"/EmployeeTask/showAvailableTasks",
+            data: {},
+            success:function(result){
+                if(result.length > 0){
+                    for(var count = result.length-1; count >= 0; count--){
+                        taskId = result[count];
+                        checkOneTask(taskId);
+                        if(releaseType == "自由委派" || releaseType== "分块发布"){
+                            if(acceptedEmployeeId.indexOf(employeeId) == -1){
+                                AddRow(picCode, taskId, taskName, ptype, releaseType, startTime, award);
+                            }
+                        }else{
+                            if(acceptedEmployeeId.indexOf(employeeId) == -1 &&
+                                appointedEmployeeId.indexOf(employeeId) != -1){
+                                AddRow(picCode,taskId,taskName,ptype,releaseType,startTime,award);
+                            }
+                        }
+                    }
+                }
+            },
+            error:function(result){
+                alert("error");
+            }
+        });
+    }
+
+    function checkOneTask(taskId) {
+        $.ajax({
+            type: 'POST',
+            url:"/EmployeeTask/checkOneTask",
+            async: false,                         //将ajax改为同步模式
+            data: {
+                taskId:taskId
+            },
+            success:function(result) {
+                var employerId = result.employerId;
+                appointedEmployeeId = result.appointedEmployeeId;
+                getOneTaskInfo(employerId, taskId);
+                ptype=result.taskType.join("，");
+                taskName = result.taskName;
+                startTime = result.startTime;
+                limitTime = result.limitTime;
+                var myReleaseType = result.releaseType;
+                award = result.award;
+                if (result.overallPictureId.length > 0) {
+                    picCode=showPicture(result.overallPictureId[0])
+                } else if (result.rectanglePictureId.length > 0){
+                    picCode = showPicture(result.rectanglePictureId[0]);
+                } else{
+                    picCode=showPicture(result.boundaryPictureId[0]);
+                }
+                if(myReleaseType == "APPOINTED")
+                    releaseType = "指定委派";
+                else if(myReleaseType == "NON_APPOINTED")
+                    releaseType = "自由委派";
+                else if(myReleaseType == "SHARED")
+                    releaseType = "分块发布";
+            },
+            error:function(result){
+                alert("error");
+            }
+        });
+    }
+
+    function getOneTaskInfo(employerId, taskId) {
+        $.ajax({
+            type: 'POST',
+            url:"/EmployerTask/showOneTaskInfo",
+            async: false,                         //将ajax改为同步模式
+            data: {
+                employerId:employerId,
+                taskId:taskId
+            },
+            success:function(result){
+                acceptedEmployeeId=result.acceptedEmployeeId;
+            },
+            error:function(result){
+                alert("error");
+            }
+        });
+    }
+
+    function showPicture(pictureId) {
+        var picCode="";
+        $.ajax({
+            type: 'POST',
+            url:"/EmployeeTask/getPictureBase64Code",
+            async: false,                         //将ajax改为同步模式
+            data: {
+                taskId:taskId,
+                pictureId:pictureId
+            },
+            success:function(result){
+                picCode = result;
+            },
+            error:function(result){
+                alert("error");
+            }
+        });
+        return picCode;
+    }
+</script>
+
+
+

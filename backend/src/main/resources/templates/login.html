@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>LOGIN</title>
+    <link rel="stylesheet" href="css/login_style.css">
+    <script src="js/sweetalert.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/sweetalert.css">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div>
+    <img src="img/icon.png" style="width:100px;height:100px;margin-left:60%;margin-top:6%">
+    <h1 style="float:right;width:20%;margin-top:7%;margin-right:10%;font-size:45px">CrowdSourcingTags</h1>
+</div>
+<div class="login-page">
+    <form id="login-form" class="form" method="post" action="#">
+        <select id="login-profession" type="selection" name="identity" >
+            <option value="1">众包工人 </option>
+            <option value="2">众包发起者</option>
+        </select>
+        <input id="login-id" type="text" name="username" placeholder="账号"><br><br/>
+        <input id="login-password" type="password" name="password" placeholder="密码"><br><br/>
+        <button type="button" id="login">登　录</button>
+        <div class="msg"><span>还没有账户？</span>
+            <button id="go-register">创建账户</button>
+        </div>
+    </form>
+    <form id="register-form" class="form" method="post" action="#">
+        <select id="register-profession" type="selection" name="identity" >
+            <option value="0">请选择您的身份</option>
+            <option value="1">众包工人 </option>
+            <option value="2">众包发起者</option>
+        </select>
+        <input id="register-name" type="text" name="username" placeholder="用户名">
+		<input id="register-id" type="text" name="userAccount" placeholder="账号">
+        <input id="register-password" type="password" name="password" placeholder="密码">
+		<input id="register-repeatPassword" type="password" name="password" placeholder="重复密码">
+        <input id="register-email" type="text" name="email" placeholder="电子邮箱">
+        <button type="button" id="register">创　建</button>
+        <div class="msg"><span>已有账户？</span>
+            <button id="go-login">去登录</button>
+        </div>
+    </form>
+</div>
+
+<script src="js/jquery-2.1.1.min.js"></script>
+
+<script>
+    var reportedTimes;
+    function showEmployeeInfo(employeeId) {
+        $.ajax({
+            type: 'POST',
+            url: "/EmployeeInfo/showEmployeeInfo",
+            async: false,                         //将ajax改为同步模式
+            data: {
+                employeeId: employeeId
+            },
+            success: function (result) {
+                reportedTimes=result.reportedTimes;
+            },
+            error: function (result) {
+                alert("error");
+            }
+        });
+    }
+
+        $('#login').click(function () {
+            var professionType = "";
+            var profession = document.getElementById("login-profession").value;
+            if(profession == "1"){
+                professionType = "众包工人";
+            }
+            else if(profession == "2"){
+                professionType = "众包发起者";
+            }
+            var id = document.getElementById("login-id").value;
+            var password = document.getElementById("login-password").value;
+            $.ajax({
+                type: 'POST',
+                url:"/RegisterLogin/login",
+                data: {
+                    profession:professionType,
+                    id:id,
+                    password:password
+                },
+                success:function(result){
+                    if(result == true){
+                        localStorage.setItem("userId", id);
+                        if(profession == "1"){
+                            showEmployeeInfo(id);
+                            if(reportedTimes>=10) {
+                                swal("登录失败","您的账号已被冻结","error");
+                                return;
+                            }
+                            swal("登录成功","欢迎使用本系统,众包工人"+id,"success");
+                            setTimeout(function(){
+                                window.location.href='employee-home';
+                                window.event.returnValue=false;
+                            }, 1500);
+                        }
+                        else if(profession == "2"){
+                            swal("登录成功","欢迎使用本系统,众包发起者"+id,"success");
+                            setTimeout(function(){
+                                window.location.href='employer-home';
+                                window.event.returnValue=false;
+                            }, 1500);
+                        }
+                    }
+                    else if(result == false){
+                        swal("登录失败","用户名或密码错误","error");
+                    }
+
+                },
+                error: function (result) {
+                    alert("error!");
+                }
+            });
+        });
+
+        $('#register').click(function () {
+            var profession = document.getElementById("register-profession").value;
+            var name = document.getElementById("register-name").value;
+            var id = document.getElementById("register-id").value;
+            var password = document.getElementById("register-password").value;
+            var repeatPassword = document.getElementById("register-repeatPassword").value;
+            var email = document.getElementById("register-email").value;
+            var dpId = initDp;
+            if(profession == "0"){
+                swal("注册失败","请选择您的身份","warning");
+            }
+            else if(name==''){
+                swal("注册失败","请填写用户名","warning");
+            }
+            else if((id.indexOf(',')>=0)||(id.indexOf(":")>=0)||(id.indexOf("/")>=0)||(id.indexOf("|")>=0)||(id.indexOf('<')>=0)||(id.indexOf('>')>=0)
+                ||(id.indexOf('*')>=0)||(id.indexOf('?')>=0)||(id.indexOf('"')>=0)||(id.indexOf("//")>=0)){
+                swal("注册失败","账号包含非法字符","warning");
+            }
+            else if(id.length<6){
+                swal("注册失败","账号长度至少为6","warning");
+            }
+            else if(password.length<6){
+                swal("注册失败","密码长度至少为6","warning");
+            }
+            else if(password != repeatPassword) {
+                swal("注册失败","重复密码错误","warning");
+            }
+            else if(profession == "1"){
+                var annotationJudgement = {
+                    accuracy:0,
+                    efficiency:0,
+                    grade:0
+                };
+                var reportedTimes=0;
+                var info = {
+                    employeeName:name,
+                    employeeId:id,
+                    employeePassword:password,
+                    employeeEmail:email,
+                    dpId:dpId,
+                    awardAmount:0,
+                    taskAmount:0,
+                    taskUnderway:0,
+                    taskCompleted:0,
+                    judgement:annotationJudgement,
+                    reportedTimes:reportedTimes
+                };
+                if(checkUserId(id) == "unique"){
+                    $.ajax({
+                        type: 'POST',
+                        url:"/RegisterLogin/employeeRegister",
+                        contentType: "application/json",
+                        data: JSON.stringify(info),
+                        success:function(result){
+                            if(result == true){
+                                swal("注册成功","欢迎使用本系统,众包工人"+id,"success");
+                                setTimeout(function(){
+                                    $('#register-form').toggle(300);
+                                    $('#login-form').toggle(300);
+                                }, 1500);
+                            }
+                            else if(result == false){
+                                swal("注册失败","该账号已被注册","error");
+                            }
+                        },
+                        error: function (result) {
+                            alert("error!");
+                        }
+                    });
+                }
+            }
+            else if(profession == "2"){
+                var info = {
+                    employerName:name,
+                    employerId:id,
+                    employerPassword:password,
+                    employerEmail:email,
+                    dpId:dpId,
+                    taskAmount:0,
+                    taskUnderway:0,
+                    taskCompleted:0
+                };
+                if(checkUserId(id) == "unique"){
+                    $.ajax({
+                        type: 'POST',
+                        url:"/RegisterLogin/employerRegister",
+                        contentType: "application/json",
+                        data: JSON.stringify(info),
+                        success:function(result){
+                            if(result == true){
+                                swal("注册成功","欢迎使用本系统,众包发起者"+id,"success");
+                                setTimeout(function(){
+                                    $('#register-form').toggle(300);
+                                    $('#login-form').toggle(300);
+                                }, 1500);
+                            }
+                            else if(result == false){
+                                swal("注册失败","该账号已被注册","error");
+                            }
+                        },
+                        error: function (result) {
+                            alert("error!");
+                        }
+                    });
+                }
+            }
+        });
+
+        function checkUserId(userId) {
+            var res = "";
+            $.ajax({
+                type: 'POST',
+                url:"/RegisterLogin/checkUserId",
+                async: false,                         //将ajax改为同步模式
+                data: {
+                    userId:userId
+                },
+                success:function(result){
+                    res = "unique";
+                    if(result == false){
+                        swal("注册失败","该账号已被注册","error");
+                        res = "repeat";
+                    }
+                },
+                error: function (result) {
+                    alert("error!");
+                    res = "error";
+                }
+            });
+            return res;
+        }
+
+        $('#go-login').click(function () {
+            $('#register-form').toggle(300);
+            $('#login-form').toggle(300);
+            return false;
+        });
+        $('#go-register').click(function () {
+            $('#register-form').toggle(300);
+            $('#login-form').toggle(300);
+            return false;
+        });
+</script>
+<script>
+    var initDp = "data:image/jpeg;base64,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";
+</script>
+</body>
+</html>

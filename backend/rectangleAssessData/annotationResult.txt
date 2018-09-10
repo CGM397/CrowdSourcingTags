@@ -1,0 +1,4 @@
+rectangleAssessData/sentences/employee2.txt
+rectangleAssessData/sentences/employee3.txt
+rectangleAssessData/sentences/employee5.txt
+rectangleAssessData/sentences/employee8.txt

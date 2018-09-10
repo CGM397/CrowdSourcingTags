@@ -1,0 +1,557 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery/jquery-1.4.min.js"></script>
+
+    <title>CrowdSourcingTags</title>
+
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="../static/css/metisMenu.min.css" rel="stylesheet">
+
+    <link href="../static/css/bootstrap-social.css" rel="stylesheet">
+
+    <link href="../static/css/sb-admin-2.css" rel="stylesheet">
+
+    <link href="../static/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="../static/css/fontawesome-webfont.ttf" rel="stylesheet">
+
+    <link href="../static/css/fontawesome-webfont.woff" rel="stylesheet">
+
+    <link href="../static/css/fontawesome-webfont.woff2" rel="stylesheet">
+
+    <link href="../static/fonts/glyphicons-halflings-regular.ttf" rel="stylesheet">
+
+    <link href="../static/fonts/glyphicons-halflings-regular.woff" rel="stylesheet">
+
+    <link href="../static/fonts/glyphicons-halflings-regular.woff2" rel="stylesheet">
+
+
+    <link href="http://twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.css" rel="stylesheet">
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css" rel="stylesheet">
+
+    <style>
+        #header {
+            color:white;
+            text-align:center;
+            padding:10px;
+            width:90%;
+            float: right;
+        }
+        #nav {
+            line-height:50px;
+            height: 100%;
+            width:10%;
+            float:left;
+            padding:5px;
+            text-align:center;
+        }
+        #section {
+            width:85%;
+            float:left;
+            padding:10px;
+        }
+        #footer {
+            color:Black;
+            clear:both;
+            text-align:center;
+            padding:5px;
+        }
+        p{
+            color: white;
+            height: 5%;
+            border-bottom:1px dotted #ccc;
+        }
+        ul{
+            padding:15px 0;
+            margin: 0;
+            list-style: none;
+            color: white;
+        }
+
+        a{
+            text-decoration: none;
+            display: block;
+            height: 60px;
+            line-height:  60px;
+            width:120px;
+            cursor: pointer;
+            font-size:  14px;
+            position: relative;
+        }
+        a:hover{
+            text-decoration: none;
+            background-color: white;
+        }
+        .backgroundImg{
+            filter:alpha(Opacity=60);-moz-opacity:0.6;opacity:0.6;
+        }
+         .content>ul>li:last-child>ul>li>a{
+            width:300px;
+            font-size:10px;
+            float:right;
+         }
+    </style>
+
+    <!-- 导航栏特效js实现 -->
+    <script type="text/javascript" src="Nav.js"></script>
+</head>
+
+<body background="../static/img/universe.jpg" class="backgroundImg">
+<div id="header">
+    <h1>CrowdSourcing Tags</h1>
+</div>
+
+<div id="nav" >
+    <p><i class="glyphicon glyphicon-user"></i>        我的工作台</p>
+    <p><i class="fa fa-refresh"></i>        同步</p>
+    <ul>
+        <li><a href="#">导入图片</a></li>
+        <li><a href="#">整体标注</a></li>
+        <li><a href="#">方框标注</a></li>
+        <li><a href="#">区域标注</a></li>
+        <li><a href="#">保存</a></li>
+        <li><a href="#">查看</a></li>
+        <li><a href="#">删除</a></li>
+    </ul>
+</div>
+<input type="file" id="fileToUpload" name="fileToUpload" style="display:none;" />
+<canvas id="cvs" width="800" height="600"></canvas>
+<div id="total" style="position:absolute; top:100px; left:1000px; height:300px; width:300px;" >
+    <p2 id="text" style="color:white">描述:</p2>
+    <textarea id="description" rows="5 " cols="20" readonly="readonly"></textarea>
+    <button type="button" id="changeButton" style="width:50px; height:30px; display:none" onclick="changeAnt()">修改</button>
+</div>
+</div>
+<div id="selectDiv" style="position:absolute; top:300px; left:1000px; width:300px; display:none">
+    <select id="test">
+        <option value="0">-- please select --</option>
+    </select>
+    <button type="button" style="width:50px; height:30px" onclick="showTag()">选择</button>
+</div>
+<image id="image" style="display:none"> </image>
+<script>
+    function deleteSelection(){
+        var selection = document.getElementById("test");
+        for (var i = 1; i < selection.options.length; i++) {
+            selection.removeChild(selection.options[i]);
+            selection.remove(i);
+            selection.options[i] = null;
+        }
+    }
+    function addSelection(strs){
+        var selection = document.getElementById("test");
+        for(var i=0;i<strs.length;i++){
+            selection.options.add(new Option(strs[i],0));
+        }
+    }
+    function showTag(){
+        var selects=document.getElementById("test");
+        var index=selects.selectedIndex;
+        var tagID=selects[index].text;
+        //根据tagID和pictureID获取pictureTag对象
+        $.ajax({
+            type: "GET",
+            url: "/findByTagID",
+            data: {
+                pictureID: pictureID,
+                tagID: tagID
+            },
+            success: function (result) {
+                // ...处理result
+                document.getElementById("description").value=result.annotation;
+                border=result.border;
+                var canvas = document.getElementById("cvs");
+                var ctx = canvas.getContext("2d");
+                // canvas清屏
+                ctx.clearRect(50, 50, canvas.width-100, canvas.height-100);
+                ctx.drawImage(image, 50, 50, 700, 500);
+                examine(result.border);
+            },
+            error: function (result) {
+                alert("error");
+            }
+        });
+    }
+    function examine(border) {
+        this.border = border;
+        var len = this.border.length;
+        if (len == 2) {
+            //alert("sss");
+            var oCanvas = document.getElementById('cvs');
+            var oGc = oCanvas.getContext('2d');
+            oGc.strokeStyle = "red";
+            oGc.beginPath();
+            oGc.strokeRect(border[0].x, border[0].y, border[1].x - border[0].x, border[1].y - border[0].y);
+            oGc.closePath();
+        } else if (len > 2) {
+            var oCanvas = document.getElementById('cvs');
+            var oGc = oCanvas.getContext('2d');
+            for (var i = 0; i < len - 1; i++) {
+                oGc.beginPath();
+                oGc.moveTo(border[i].x , border[i].y);
+                oGc.lineTo(border[i+1].x, border[i+1].y);
+                oGc.stroke();
+                oGc.closePath();
+            }
+        }
+    }
+    function changeAnt(){
+        var selects=document.getElementById("test");
+        var index=selects.selectedIndex;
+        if(index==0){
+            alert("请先查看标注");
+        }
+        else {
+            var massage = prompt("请输入新描述：");
+            if (massage != null) {
+                annotation = massage;
+                var tagID = selects[index].text;
+                var pictureTag = new PictureTag(pictureID, tagID, border, annotation);
+                $.ajax({
+                    type: "POST",
+                    url: "/savePictureTag",
+                    contentType: "application/json",
+                    data: JSON.stringify(pictureTag),
+                    success: function (result) {
+                        document.getElementById("description").value = massage;
+                        alert("success");
+                    },
+                    error: function (result) {
+                        alert("error");
+                    }
+                });
+            }
+        }
+    }
+</script>
+
+<script>
+    //需要保存的信息
+    var tagID;
+    var pictureID;
+    var border=[];
+    var annotation;
+    var save;
+    var saves=[];
+    var isWork;
+
+    function PictureTag(pictureID, tagID, border, annotation) {
+        this.pictureID = pictureID;
+        this.tagID = tagID;
+        this.border = border;
+        this.annotation = annotation;
+    }
+
+</script>
+<script>
+    var cvs = document.getElementById("cvs");
+    var cxt = cvs.getContext("2d");
+    var imgs = new Image();
+    imgs.src = "../static/img/1.jpg";
+    imgs.onload = drawImg;//图片加载完成再执行
+    function drawImg(){
+        cxt.drawImage(imgs,0,0,cvs.width,cvs.height);
+    }
+</script>
+
+<script>
+    var image = new Image();
+    var input1 = document.getElementById("fileToUpload");
+    if(typeof FileReader==='undefined'){
+        alert("抱歉，你的浏览器不支持 FileReader");
+        input1.setAttribute('disabled','disabled');
+    }else{
+        input1.addEventListener('change',readFile,false);
+    }
+    function readFile(){
+        var file = this.files[0];//获取上传文件列表中第一个文件
+        // console.log(file);
+        if(!/image\/\w+/.test(file.type)){
+            //图片文件的type值为image/png或image/jpg
+            alert("文件必须为图片！");
+            return false; //结束进程
+        }
+        var reader = new FileReader();//实例一个文件对象
+        // console.log(reader);
+        reader.readAsDataURL(file);//把上传的文件转换成url
+        //当文件读取成功便可以调取上传的接口
+        reader.onload = function(e){
+            // 设置src属性
+            // 绑定load事件，加载完成后执行，避免同步问题
+            image.src = this.result;
+            image.onload = function(){
+                var canvas = document.getElementById("cvs");
+                var ctx = canvas.getContext("2d");
+                // canvas清屏
+                ctx.clearRect(50, 50, canvas.width-100, canvas.height-100);
+                ctx.drawImage(image, 50, 50, 700, 500);
+                document.getElementById("description").value="";
+                pictureID=file.name;
+                tagID="";
+                border=[];
+                annotiation="";
+                save=null;
+                saves=[];
+                document.getElementById('changeButton').style.display="none";
+                document.getElementById('selectDiv').style.display="none";
+                if(isWork==false){
+                    document.getElementById('selectDiv').style.display="";
+                    document.getElementById('changeButton').style.display="";
+                    //...根据pictureID获取tagIDs
+                    $.ajax({
+                        type: "GET",
+                        url: "/findByPictureID",
+                        data: {
+                            pictureID : pictureID,
+                        },
+                        success: function (result) {
+                            // ...处理result
+                            var tagIDs = result;
+                            deleteSelection();
+                            addSelection(tagIDs);
+                        },
+                        error: function (result) {
+                            alert("error");
+                        }
+                    });
+                }
+            };
+            $('input[type=file]').wrap('<form>').closest('form').get(0).reset();
+        }
+    };
+</script>
+
+<script type="text/javascript">
+    //获取所有li的节点
+    var list = document.getElementsByTagName("li");
+    //给每个li绑定事
+    list[0].onclick = function(){
+        isWork=true;
+        document.getElementById("fileToUpload").click();
+        document.getElementById('cvs').onmousedown=null;
+        document.getElementById('cvs').onmouseup=null;
+    };
+    list[1].onclick=function() {
+        if (image.src == ""||isWork==false) {
+            alert("请先导入图片");
+        }
+        else {
+            document.getElementById('selectDiv').style.display="none";
+            var canvas = document.getElementById("cvs");
+            var ctx = canvas.getContext("2d");
+            ctx.clearRect(50, 50, canvas.width-100, canvas.height-100);
+            ctx.drawImage(image, 50, 50, 700, 500);
+            document.getElementById('cvs').onmousedown = null;
+            document.getElementById('cvs').onmouseup = null;
+            document.getElementById('description').value = "";
+            document.getElementById('changeButton').style.display="none";
+            var num = 0;
+            var oCanvas = document.getElementById('cvs');
+            var oGc = oCanvas.getContext('2d');
+            oCanvas.onmousedown = function (ev) {
+                var ev = ev || event;
+                var startX = ev.clientX - oCanvas.offsetLeft;
+                var startY = ev.clientY - oCanvas.offsetTop;
+                var start={x:startX,y:startY};
+                oCanvas.onmouseup = function (ev) {
+                    var ev = ev || event;
+                    oCanvas.onmousemove = null;
+                    oCanvas.onmouseup = null;
+                    var endX = ev.clientX - oCanvas.offsetLeft;
+                    var endY = ev.clientY - oCanvas.offsetTop;
+                    oGc.strokeStyle = "red";
+                    if(Math.abs(endX-startX)>10&&Math.abs(endY-startY)>10) {
+                        num += 1;
+                        oGc.beginPath();
+                        oGc.strokeRect(startX, startY, endX - startX, endY - startY);
+                        oGc.closePath();
+                        var massage = prompt("请添加整体描述：");
+                        document.getElementById("description").value = massage + "\n";
+                        var startPoint = {"x": startX, "y": startY};
+                        var endPoint = {"x": endX, "y": endY};
+                        tagID = new Date().getTime()
+                        border = [startPoint, endPoint];
+                        annotation = massage;
+                        save = new PictureTag(pictureID, tagID, border, annotation);
+                        saves.push(save);
+                        //alert("pictureID:" + save.pictureID + "tagID:" + save.tagID + "border:(" + save.border[0].x + "," + save.border[0].y + ")" + "annotation:" + save.annotation);
+                    }
+                }
+            }
+        }
+    }
+    list[2].onclick=function() {
+        if (image.src == ""||isWork==false) {
+            alert("请先导入图片");
+        }
+        else {
+            var canvas = document.getElementById("cvs");
+            var ctx = canvas.getContext("2d");
+            ctx.clearRect(50, 50, canvas.width-100, canvas.height-100);
+            ctx.drawImage(image, 50, 50, 700, 500);
+            document.getElementById('selectDiv').style.display="none";
+            document.getElementById('cvs').onmousedown = null;
+            document.getElementById('cvs').onmouseup = null;
+            document.getElementById('description').value = "";
+            document.getElementById('changeButton').style.display="none";
+            var num = 0;
+            var oCanvas = document.getElementById('cvs');
+            var oGc = oCanvas.getContext('2d');
+            oCanvas.onmousedown = function (ev) {
+                var ev = ev || event;
+                var startX = ev.clientX - oCanvas.offsetLeft;
+                var startY = ev.clientY - oCanvas.offsetTop;
+                oCanvas.onmouseup = function (ev) {
+                    var ev = ev || event;
+                    oCanvas.onmousemove = null;
+                    oCanvas.onmouseup = null;
+                    var endX = ev.clientX - oCanvas.offsetLeft;
+                    var endY = ev.clientY - oCanvas.offsetTop;
+                    oGc.strokeStyle = "red";
+                    if(Math.abs(endX-startX)>10&&Math.abs(endY-startY)>10) {
+                        num += 1;
+                        oGc.beginPath();
+                        oGc.strokeRect(startX, startY, endX - startX, endY - startY);
+                        oGc.closePath();
+                        numX = (startX > endX) ? endX : startX;
+                        numY = (startY > endY) ? endY : startY;
+                        oGc.fillText("方框" + num + ":", numX, numY - 5);
+                        var massage = prompt("请添加该方框描述：");
+                        document.getElementById("description").value += "方框" + num + ":" + massage + "\n";
+                        var startPoint = {"x": startX, "y": startY};
+                        var endPoint = {"x": endX, "y": endY};
+                        tagID = new Date().getTime()
+                        border = [startPoint, endPoint];
+                        annotation = massage;
+                        save = new PictureTag(pictureID, tagID, border, annotation);
+                        //alert("pictureID:" + save.pictureID + "tagID:" + save.tagID + "border:(" + save.border[0].x + "," + save.border[0].y + ")" + "annotation:" + save.annotation);
+                        saves.push(save);
+                    }
+                };
+            };
+        }
+    }
+    list[3].onclick=function() {
+        if (image.src == ""||isWork==false) {
+            alert("请先导入图片");
+        }
+        else {
+            document.getElementById('selectDiv').style.display="none";
+            document.getElementById('changeButton').style.display="none";
+            document.getElementById('description').value = "";
+            var canvas = document.getElementById("cvs");
+            var ctx = canvas.getContext("2d");
+            ctx.clearRect(50, 50, canvas.width-100, canvas.height-100);
+            ctx.drawImage(image, 50, 50, 700, 500);
+            var num = 0;
+            var oC = document.getElementById('cvs');
+            var oCG = oC.getContext('2d');
+            oC.onmousedown = function (ev) {
+                border=[];
+                var ev = ev || window.event;
+                oCG.beginPath();
+                oCG.moveTo(ev.clientX - oC.offsetLeft, ev.clientY - oC.offsetTop); //ev.clientX-oC.offsetLeft,ev.clientY-oC.offsetTop鼠标在当前画布上X,Y坐标
+                document.onmousemove = function (ev) {
+                    var ev = ev || window.event;//获取event对象
+                    oCG.lineTo(ev.clientX - oC.offsetLeft, ev.clientY - oC.offsetTop);
+                    oCG.stroke();
+                    var line = document.getElementById("m");
+                    //line.innerText += "(" + (ev.clientX - oC.offsetLeft) + "," + (ev.clientY - oC.offsetTop) + ")";
+                    var point={"x":ev.clientX - oC.offsetLeft,"y":ev.clientY - oC.offsetTop};
+                    border.push(point);
+                };
+                oC.onmouseup = function (ev) {
+                    document.onmousemove = null;
+                    document.onmouseup = null;
+                    num += 1;
+                    oCG.closePath();
+                    oCG.fillText("区域" + num + ":", ev.clientX - oC.offsetLeft - 20, ev.clientY - oC.offsetTop - 20)
+                    var massage = prompt("请填写该区域描述：");
+                    document.getElementById("description").value += "区域" + num + ":" + massage + "\n";
+                    tagID=new Date().getTime()
+                    annotation=massage;
+                    save = new PictureTag(pictureID, tagID, border, annotation);
+                    //alert("pictureID:"+save.pictureID+"tagID:"+save.tagID+"border:("+save.border[0].x+","+save.border[0].y+")"+"annotation:"+save.annotation);
+                    saves.push(save);
+                };
+            };
+        }
+    }
+    list[4].onclick=function(){
+        if ((saves.length==0)||isWork==false){
+            alert("请先导入图片并进行标注");
+        } else {
+            for(var i=0;i<saves.length;i++) {
+                $.ajax({
+                    type: "POST",
+                    url: "/savePictureTag",
+                    contentType: "application/json",
+                    data: JSON.stringify(saves[i]),
+                    success: function (result) {
+                        alert("success");
+                    },
+                    error: function (result) {
+                        alert("error");
+                    }
+                });
+            }
+        }
+    }
+    list[5].onclick=function(){
+        isWork=false;
+        document.getElementById("fileToUpload").click();
+        document.getElementById('cvs').onmousedown=null;
+        document.getElementById('cvs').onmouseup=null;
+    }
+    list[6].onclick=function(){
+        var selects=document.getElementById("test");
+        var index=selects.selectedIndex;
+        var tagID=selects[index].text;
+        if(isWork != false){
+            alert("请先查看图片!");
+        }
+        else if(index == 0){
+            alert("请选择标注!");
+        }
+        else{
+            $.ajax({
+                type: 'POST',
+                url:"/deleteOneTag",
+                data: {
+                    pictureID:pictureID,
+                    partID:tagID
+                },
+                success:function(result){
+                    alert("success!");
+                    var selects=document.getElementById("test");
+                    var index=selects.selectedIndex;
+                    var canvas = document.getElementById("cvs");
+                    var ctx = canvas.getContext("2d");
+                    // canvas清屏
+                    ctx.clearRect(50, 50, canvas.width-100, canvas.height-100);
+                    ctx.drawImage(image, 50, 50, 700, 500);
+                    document.getElementById("description").value="";
+                    selects.removeChild(selects.options[index]);
+                },
+                error: function () {
+                    alert("There is no tag to delete!");
+                }
+            });
+        }
+    }
+</script>
+
+<div id="footer">
+    Copyright@STZ
+</div>
+</body>
+</html>

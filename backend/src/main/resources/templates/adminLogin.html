@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>adminLogin</title>
+    <link rel="stylesheet" href="css/login_style.css">
+    <script src="js/sweetalert.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/sweetalert.css">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div>
+    <img src="img/icon.png" style="width:100px;height:100px;margin-left:60%;margin-top:6%">
+    <h1 style="float:right;width:20%;margin-top:7%;margin-right:10%;font-size:45px">CrowdSourcingTags</h1>
+</div>
+<div class="login-page">
+    <form id="login-form" class="form" method="post" action="#">
+        <input id="login-id" type="text" name="username" placeholder="账号"><br><br/>
+        <input id="login-password" type="password" name="password" placeholder="密码"><br><br/>
+        <button type="button" id="login">登　录</button>
+    </form>
+</div>
+
+<script src="js/jquery-2.1.1.min.js"></script>
+<script>
+        $('#login').click(function () {
+        var id = document.getElementById("login-id").value;
+        var password = document.getElementById("login-password").value;
+        if((id=="admin")&&(password=="admin")){
+            swal("登录成功","欢迎使用本系统,管理员"+id,"success");
+            setTimeout(function(){
+                window.location.href='admin';
+                window.event.returnValue=false;
+            }, 1500);
+        }else{
+            swal("登录失败","用户名或密码错误","error")
+        }
+    });
+
+</script>
+
+</body>
+</html>

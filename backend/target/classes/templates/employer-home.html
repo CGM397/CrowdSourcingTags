@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<title>employer-home</title>
+	<link href="css/zzsc.css" rel="stylesheet">
+	<link href="css/maps.css" rel="stylesheet">
+	<link href="fonts/css/font-awesome.css" rel="stylesheet">
+	<link href="fonts/fonts/fontawesome-webfont.ttf" rel="stylesheet">
+	<link href="fonts/fonts/fontawesome-webfont.woff" rel="stylesheet">
+	<link href="fonts/fonts/fontawesome-webfont.woff2" rel="stylesheet">
+	<script type="text/javascript" src="js/message.js"></script>
+	<link href="css/message.css" rel="stylesheet">
+	<script src="js/sweetalert.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/sweetalert.css">
+	<script type="text/javascript" src="js/maps.js"></script>
+	<script type="text/javascript" src="js/google.js"></script>
+	<script type="text/javascript" src="js/vue.min.js"></script>
+	<script type="text/javascript">$(document).ready(function(){$().maps();});</script>
+	<script type="text/javascript">$(function (){
+        $('#nky2 li:not(#nky2 li:last)').click(function (){
+            $('.active').removeClass('active');
+            $(this).addClass("active");
+        });
+        $('.venus-menuM li').click(function(){
+            $('.venus-menuM li.active').removeClass('active');
+            $(this).addClass("active");
+            var mode=document.getElementById('read').innerText;
+            document.getElementById('read').innerText=(mode=='全部标为已读')?'删除已读':'全部标为已读';
+            if(mode=="全部标为已读"){
+                document.getElementById('read').innerText='删除已读';
+                refreshRead();
+            }
+            else{
+                document.getElementById('read').innerText='全部标为已读';
+                refreshNew();
+            }
+        });
+	})
+	</script>
+	<link rel="shortcut icon" href="../static/img/favicon.ico" type="image/x-icon" />
+	<style>
+		.settingContent{
+			text-align: auto;
+			font-size: 20px;
+			font-size:normal;
+			margin-top:6%;
+			position:absolute;
+		}
+		 .content>ul>li:last-child>ul>li>a{
+            width:300px;
+            font-size:10px;
+            float:right;
+         }
+	</style>
+	
+</head>
+
+<body>
+
+<div class="content">
+	<ul id="nky2" class="venus-menu">
+		<li class="active"><a href="employer-home"><i class="icon-home"></i>主页</a></li>
+		<li><a href="#"><i class="icon-user"></i>个人</a>
+			<ul>
+				<li><a href="employer-info">个人信息</a></li>
+				<li><a href="employer-data">统计信息</a></li>
+			</ul></li>
+		<li><a href="#"><i class="icon-tasks"></i>任务</a><ul>
+			<li><a href="#">发布新任务</a><ul>
+                <li><a href="openPublication">自由发布</a></li>
+                <li><a href="specifiedPublication">指派发布</a></li>
+				<li><a href="cutPartPublication">分块发布</a></li>
+            </ul>
+            <li><a href="employer-underway">进行中任务</a></li>
+            <li><a href="employer-completed">已完成任务</a></li>
+		</ul></li>
+		<li><a href="employer-contact"><i class="icon-envelope-alt"></i>联系我们</a></li>
+		<li style="float:right" onclick="openM()"><a href="#"><i class="fa fa-envelope-open-o" aria-hidden="true"></i>信息</a></li>
+	</ul>
+	<div class="settingContent" style="background:url(img/home.png) top center no-repeat; width:94.7%; height:88%">
+	</div>
+</div>
+<section id="messageP" class="panelM none">
+	<div class="contentM">
+		<ul class="venus-menuM">
+			<li class="active"><a href="#">未读</a></li>
+			<li><a href="#">已读</a></li>
+		</ul>
+	</div>
+	<div id='messageBox' class="scroll"></div>
+	<div>
+		<a id="read" class="btn2" onclick="readButton()">
+			全部标为已读
+		</a>
+	</div>
+</section>
+</body>
+</html>

@@ -1,0 +1,40 @@
+/*自定义宽度*/  
+.myOwnDdl{  
+    display:inline-block;  
+    width:40%;  
+}  
+  
+/* 实现宽度自定义 */  
+.myOwnDdl .btn-group{  
+    width:100%;  
+}  
+.myOwnDdl .multiselect {  
+    width:100%;  
+    text-align:right;  
+    margin-top:-5px;  
+}  
+.myOwnDdl ul {  
+    width:100%;  
+}  
+.myOwnDdl .multiselect-selected-text {  
+    position:absolute;  
+    left:0;  
+    right:25px;  
+    text-align:left;  
+    padding-left:20px;  
+}  
+  
+/*控制隔行换色*/  
+.myOwnDll .multiselect-container li.odd {  
+    background: #eeeeee;  
+}
+
+.sel {
+    background: #444444 0px 0px;
+    width:200px;
+    height:40px;
+    color: #ffffff;
+    font-size: 14px;
+    border: #000000 1px solid;
+    padding: 5px;
+}

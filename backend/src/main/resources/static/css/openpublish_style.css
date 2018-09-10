@@ -1,0 +1,220 @@
+
+	   
+	   .panel-left {
+			 position: absolute;
+             text-align: center;
+             background-color: white;
+             width: 700px;
+			 height: 700px;
+             border-radius: 10px; 
+             padding: 5px;
+             margin-left: 200px;
+			 margin-top: 200px;
+             transition: box-shadow .30s;
+           }
+       .panel-left:hover{
+             box-shadow: #fff 5px 5px 25px;
+           }
+	 
+	 
+	   .panel-rightTop{
+		     position: absolute;
+             background-color: white;
+             width: 700px;
+			 height: 200px;
+             border-radius: 10px; 
+             padding:1px;
+             margin-left: 1000px;
+			 margin-top: 200px;
+             transition: box-shadow .30s;
+	        }
+	   .panel-rightTop:hover{
+             box-shadow: #fff 5px 5px 25px;
+           }
+		   
+	    .panel-rightMiddle{
+		     position: absolute;
+             background-color: white;
+             width: 700px;
+			 height: 200px;
+             border-radius: 10px; 
+             padding:1px;
+             margin-left: 1000px;
+			 margin-top: 450px;
+             transition: box-shadow .30s;
+	        }
+	   .panel-rightMiddle:hover{
+             box-shadow: #fff 5px 5px 25px;
+           }
+	  
+	    .panel-rightBottom{
+		     position: absolute;
+             background-color: white;
+             width: 700px;
+			 height: 200px;
+             border-radius: 10px; 
+             padding:1px;
+             margin-left: 1000px;
+			 margin-top: 700px;
+             transition: box-shadow .30s;
+	        }
+	   .panel-rightBottom:hover{
+             box-shadow: #fff 5px 5px 25px;
+           }
+	  
+	   h1 {
+             font-weight: bold;
+             font-size: 25px;
+             margin: 25px auto 25px;
+           }
+       .clearBtn{
+             margin-top:2px;
+             float:right;
+       }
+	   .butt {
+             margin-top:30px;
+             margin-left:0px;
+           }   
+	   body{
+	         font: 14px/28px "微软雅黑";
+	   }
+	   .contact *:focus{
+	         outline:none;
+	   }
+	   .contact{
+	         width:600px;
+			 height:auto;
+			 margin: 40px auto;
+			 padding: 10px;
+	   }
+	   .contact ul{
+	         list-style-type: none;
+	         width: 600px;
+	   }
+	   .contact ul li{
+	         border-bottom: 1px solid #DFDFDF;
+			 padding: 12px;
+	   }
+	   label{
+		     padding-top:8px;
+	         width:70px;
+			 display:inline-block;
+			 float: left;             
+	   }
+	   .contact>form>ul>li:nth-child(2)>input{
+       	         position:relative;
+       	         margin-left:110px;
+       	         width:220px;
+       			 height:35px;
+       			 border:1px solid #AAAAAA;
+       			 border-radius:10px;
+       			 padding:3px 8px;
+       	   }
+	   .contact ul li input[type=text],input[type=number],select{
+	         position:relative;
+	         margin-left:0px;
+	         width:220px;
+			 height:35px;
+			 border:1px solid #AAAAAA;
+			 border-radius:10px;
+			 padding:3px 8px;
+	   }
+       .contact ul li input:focus{
+	         border-color: green;
+	   }
+	   .contact ul li input[type=text],input[type=number]{
+	         transition: .30s;
+	   }
+	   
+	   select{
+		     width:240px;
+			 height:30px;
+	   }
+	   textarea{
+			 border-radius:10px;
+	   }
+	   .contact ul li select:focus{
+	         border-color: green;
+	   }
+       .contact ul li textarea:focus{
+	         border-color: green;
+			 padding-right:40px;
+	   }
+	   
+	   
+	   
+	 /*导入图片设置*/  
+	.float1{      
+        float:left;      
+        width : 50px;      
+        height: 50px;      
+        overflow: hidden;      
+        border: 1px solid #CCCCCC;      
+        border-radius: 10px;      
+        padding: 5px;      
+        margin: 5px;      
+    }      
+	
+	.float2{      
+        float:left;      
+        width : 50px;      
+        height: 50px;      
+        overflow: hidden;      
+        border: 1px solid #CCCCCC;      
+        border-radius: 10px;      
+        padding: 5px;      
+        margin: 5px;      
+    }      
+	
+	.float3{      
+        float:left;      
+        width : 50px;      
+        height: 50px;      
+        overflow: hidden;      
+        border: 1px solid #CCCCCC;      
+        border-radius: 10px;      
+        padding: 5px;      
+        margin: 5px;      
+    }      
+	
+    img{      
+        position: relative;      
+    }      
+    .result{      
+        width: 50px;      
+        height: 50px;      
+        text-align: center;      
+        box-sizing: border-box;      
+    }     
+   
+   
+    #file_input1{    
+        display: none;    
+    }    
+     #file_input2{    
+        display: none;    
+    }    
+	 #file_input3{    
+        display: none;    
+    }    
+    
+    .delete{    
+        width: 50px;    
+        height:50px;    
+        position: absolute;    
+        text-align: center;    
+        line-height: 50px;    
+        z-index: 10;    
+        font-size: 15px;    
+        background-color: rgba(255,255,255,0.8);    
+        color: #777;    
+        opacity: 0;    
+        transition-duration:0.7s;
+        -webkit-transition-duration: 0.7s;     
+    }    
+    
+    
+    .delete:hover{    
+        cursor: pointer;    
+        opacity: 1;    
+    }    
